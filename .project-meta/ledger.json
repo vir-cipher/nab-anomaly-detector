@@ -1,0 +1,31 @@
+{
+  "_comment": "CANONICAL ledger (Rule 5). Lives in .project-meta/ledger.json, committed alongside code.",
+  "project": "nab-anomaly-detector",
+  "repo": "vir-cipher/nab-anomaly-detector",
+  "author": "vir-cipher",
+  "step_pointer": 1,
+  "last_green_tag": null,
+  "steps": [
+    {
+      "id": "step-000",
+      "status": "done",
+      "done_on": "2026-08-06",
+      "commit_sha": null,
+      "commit_sha_note": "A commit cannot embed its own SHA; patched next run (pre-declared in decisions.log, Rule 3).",
+      "tests_green": true,
+      "files_touched": [
+        "README.md", "docs/WALKTHROUGH.md", "src/__init__.py", "src/meta.py",
+        "tests/test_scaffold.py", ".github/workflows/ci.yml", "requirements.txt",
+        ".gitignore", ".project-meta/spec.md", ".project-meta/plan.json",
+        ".project-meta/ledger.json", ".project-meta/decisions.log",
+        "data/.gitkeep", "results/.gitkeep"
+      ],
+      "layman_note": {
+        "what": "Built the project skeleton: folders, README, walkthrough, tests, CI, and a frozen 21-step plan.",
+        "why": "Every later step builds on a tested, scope-locked base — no drift possible.",
+        "concept": "Scaffold — the empty-but-working skeleton built before any real logic, so the project stays green from day one.",
+        "next": "Download the NAB dataset and document what is inside those 58 data streams."
+      }
+    }
+  ]
+}

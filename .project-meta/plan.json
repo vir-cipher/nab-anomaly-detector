@@ -1,0 +1,134 @@
+{
+  "project": "nab-anomaly-detector",
+  "frozen_on": "2026-08-06",
+  "frozen_by": "vir-cipher",
+  "rule_1_note": "This plan is immutable (Rule 1). Steps may be marked done; order may not change.",
+  "steps": [
+    {
+      "id": "step-000",
+      "phase": 10,
+      "title": "Scaffold + README + WALKTHROUGH + CI + frozen spec/plan + tests",
+      "gate": "Repo public, README >=200w, WALKTHROUGH >=300w, CI valid, no speculation"
+    },
+    {
+      "id": "step-001",
+      "phase": 11,
+      "title": "Download NAB dataset and document its structure and categories",
+      "gate": "data/ contains NAB CSV files, structure documented in WALKTHROUGH"
+    },
+    {
+      "id": "step-002",
+      "phase": 11,
+      "title": "Implement NAB scoring protocol (standard + reward-low-FP profiles)",
+      "gate": "src/scoring.py passes unit tests with known inputs"
+    },
+    {
+      "id": "step-003",
+      "phase": 11,
+      "title": "Implement null detector and score on NAB as baseline",
+      "gate": "Null detector scores ~0 as expected, validates scoring pipeline end-to-end"
+    },
+    {
+      "id": "step-004",
+      "phase": 11,
+      "title": "Reproduce at least 1 published baseline score and validate against published numbers",
+      "gate": "Score within +/-5% of published value for >=1 detector on >=1 profile"
+    },
+    {
+      "id": "step-005",
+      "phase": 12,
+      "title": "Implement EWMA detector with streaming interface",
+      "gate": "EWMA detector passes unit tests, produces anomaly scores on sample data"
+    },
+    {
+      "id": "step-006",
+      "phase": 12,
+      "title": "Implement Z-score detector with streaming interface",
+      "gate": "Z-score detector passes unit tests, produces anomaly scores on sample data"
+    },
+    {
+      "id": "step-007",
+      "phase": 12,
+      "title": "Implement simple threshold detector",
+      "gate": "Threshold detector passes unit tests"
+    },
+    {
+      "id": "step-008",
+      "phase": 12,
+      "title": "Score all statistical detectors on NAB and tabulate results",
+      "gate": "results/ contains scored CSV, >=2 detectors scored, scores plausible"
+    },
+    {
+      "id": "step-009",
+      "phase": 13,
+      "title": "Implement isolation forest detector with streaming adapter",
+      "gate": "Isolation forest detector passes unit tests, handles streaming input"
+    },
+    {
+      "id": "step-010",
+      "phase": 13,
+      "title": "Score isolation forest on NAB and compare to statistical detectors",
+      "gate": "Isolation forest scored, comparison table in results/"
+    },
+    {
+      "id": "step-011",
+      "phase": 13,
+      "title": "Parameter sensitivity analysis for isolation forest",
+      "gate": ">=3 parameter configs tested, results documented"
+    },
+    {
+      "id": "step-012",
+      "phase": 14,
+      "title": "Design and implement hybrid combiner (best statistical + ML)",
+      "gate": "Hybrid detector passes unit tests, voting rule documented"
+    },
+    {
+      "id": "step-013",
+      "phase": 14,
+      "title": "Score hybrid on NAB and compare to all prior detectors",
+      "gate": "Hybrid scored, full comparison table updated"
+    },
+    {
+      "id": "step-014",
+      "phase": 14,
+      "title": "Runtime benchmarking — wall-clock per stream for each detector",
+      "gate": "Speed table in results/, >=3 detectors benchmarked"
+    },
+    {
+      "id": "step-015",
+      "phase": 14,
+      "title": "Build Streamlit dashboard for live anomaly visualization",
+      "gate": "Dashboard runs locally, shows real-time scoring on sample stream"
+    },
+    {
+      "id": "step-016",
+      "phase": 15,
+      "title": "Expand WALKTHROUGH.md to full write-up (>=2000 words, 9 sections)",
+      "gate": "WALKTHROUGH >=2000w, every jargon defined, all sections present"
+    },
+    {
+      "id": "step-017",
+      "phase": 15,
+      "title": "Polish README (<500 words, quick-start, key finding, credits)",
+      "gate": "README <500w, has quick-start + key finding + credits B.Cyber at IIT Kanpur (WSAIS)"
+    },
+    {
+      "id": "step-018",
+      "phase": 15,
+      "title": "Final CI verification and reproducibility check",
+      "gate": "Fresh clone -> pip install -> pytest -> all green; CI green on GitHub"
+    },
+    {
+      "id": "step-019",
+      "phase": 16,
+      "title": "Verify all claims with primary sources and ensure repo is public",
+      "gate": "Every numerical claim traced to NAB leaderboard or own scored results"
+    },
+    {
+      "id": "step-020",
+      "phase": 16,
+      "title": "Update SPA evidence and Ground Truth section 7",
+      "gate": "Evidence table on Projects SPA updated, Ground Truth reflects final results"
+    }
+  ]
+}

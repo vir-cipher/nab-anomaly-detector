@@ -1,0 +1,9 @@
+# Decisions Log — nab-anomaly-detector
+# Rule 3: each entry is a reconciliation or design decision.
+
+## 2026-08-06 — Bootstrap (step-000)
+- Decision: ledger.json commit_sha for step-000 is null because a commit cannot embed its own SHA. Will be patched in the next run (same approach as vuln-triage-ai step-000).
+- Decision: 21-step plan frozen per Rule 1. Plan covers Phases 10-16 (bootstrap through publish).
+- Decision: No API keys needed for this project (pure Python, public data). No human gate for credentials.
+- Decision: NAB dataset will be downloaded via git clone or direct download in step-001, not bundled in the repo (too large).
+- Decision: requirements.txt starts minimal (pytest only); dependencies added as detectors are built (pandas, scikit-learn, numpy, streamlit).
