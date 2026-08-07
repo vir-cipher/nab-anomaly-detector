@@ -1,4 +1,4 @@
-__pycache__/
+﻿__pycache__/
 *.pyc
 *.pyo
 .venv/
@@ -10,3 +10,6 @@ build/
 .coverage
 htmlcov/
 .DS_Store
+
+# NAB data (downloaded by src/download_nab.py, not committed)
+data/nab/

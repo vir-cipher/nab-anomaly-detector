@@ -3,28 +3,59 @@
   "project": "nab-anomaly-detector",
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
-  "step_pointer": 1,
+  "step_pointer": 2,
   "last_green_tag": null,
   "steps": [
     {
       "id": "step-000",
       "status": "done",
       "done_on": "2026-08-06",
-      "commit_sha": null,
-      "commit_sha_note": "A commit cannot embed its own SHA; patched next run (pre-declared in decisions.log, Rule 3).",
+      "commit_sha": "bfb30824d308e198b1fc0250767d77ced5984a06",
       "tests_green": true,
       "files_touched": [
-        "README.md", "docs/WALKTHROUGH.md", "src/__init__.py", "src/meta.py",
-        "tests/test_scaffold.py", ".github/workflows/ci.yml", "requirements.txt",
-        ".gitignore", ".project-meta/spec.md", ".project-meta/plan.json",
-        ".project-meta/ledger.json", ".project-meta/decisions.log",
-        "data/.gitkeep", "results/.gitkeep"
+        "README.md",
+        "docs/WALKTHROUGH.md",
+        "src/__init__.py",
+        "src/meta.py",
+        "tests/test_scaffold.py",
+        ".github/workflows/ci.yml",
+        "requirements.txt",
+        ".gitignore",
+        ".project-meta/spec.md",
+        ".project-meta/plan.json",
+        ".project-meta/ledger.json",
+        ".project-meta/decisions.log",
+        "data/.gitkeep",
+        "results/.gitkeep"
       ],
       "layman_note": {
         "what": "Built the project skeleton: folders, README, walkthrough, tests, CI, and a frozen 21-step plan.",
-        "why": "Every later step builds on a tested, scope-locked base — no drift possible.",
-        "concept": "Scaffold — the empty-but-working skeleton built before any real logic, so the project stays green from day one.",
+        "why": "Every later step builds on a tested, scope-locked base \u00e2\u20ac\u201d no drift possible.",
+        "concept": "Scaffold \u00e2\u20ac\u201d the empty-but-working skeleton built before any real logic, so the project stays green from day one.",
         "next": "Download the NAB dataset and document what is inside those 58 data streams."
+      }
+    },
+    {
+      "id": "step-001",
+      "status": "done",
+      "done_on": "2026-08-07",
+      "commit_sha": null,
+      "commit_sha_note": "SHA derived from git log next run (commit includes this file)",
+      "tests_green": true,
+      "files_touched": [
+        "src/download_nab.py",
+        "tests/test_nab_data.py",
+        "docs/WALKTHROUGH.md",
+        ".gitignore",
+        ".github/workflows/ci.yml",
+        ".project-meta/ledger.json",
+        ".project-meta/decisions.log"
+      ],
+      "layman_note": {
+        "what": "Downloaded the full NAB dataset (58 CSV streams across 7 categories, plus ground-truth anomaly labels) via a reusable download script.",
+        "why": "The benchmark data is the raw material for everything that follows. Without it, there is nothing to detect anomalies in, nothing to score against.",
+        "concept": "Data ingestion \u2014 writing a script that fetches, organises, and validates a dataset so the pipeline starts from a clean, verified base.",
+        "next": "Implement the NAB scoring protocol so we can actually measure how good (or bad) our detectors are."
       }
     }
   ]

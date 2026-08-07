@@ -1,4 +1,4 @@
-name: ci
+﻿name: ci
 on:
   push:
     branches: [main]
@@ -13,4 +13,6 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -r requirements.txt
+      - name: Download NAB dataset
+        run: python src/download_nab.py
       - run: python -m pytest tests/ -v

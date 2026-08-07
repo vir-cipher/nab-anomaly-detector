@@ -7,3 +7,5 @@
 - Decision: No API keys needed for this project (pure Python, public data). No human gate for credentials.
 - Decision: NAB dataset will be downloaded via git clone or direct download in step-001, not bundled in the repo (too large).
 - Decision: requirements.txt starts minimal (pytest only); dependencies added as detectors are built (pandas, scikit-learn, numpy, streamlit).
+
+2026-08-07 step-001: Downloaded NAB dataset (58 CSVs + 2 label files) via src/download_nab.py. Data is gitignored; CI downloads fresh. 10 new tests verify CSV format, label integrity, and dataset completeness. WALKTHROUGH.md Section 5 documents the 7 categories, format, and label structure. Chose zip-extract method over per-file urllib (60x faster). Patched step-000 commit_sha to bfb3082.
