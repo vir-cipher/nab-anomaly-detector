@@ -9,3 +9,6 @@
 - Decision: requirements.txt starts minimal (pytest only); dependencies added as detectors are built (pandas, scikit-learn, numpy, streamlit).
 
 2026-08-07 step-001: Downloaded NAB dataset (58 CSVs + 2 label files) via src/download_nab.py. Data is gitignored; CI downloads fresh. 10 new tests verify CSV format, label integrity, and dataset completeness. WALKTHROUGH.md Section 5 documents the 7 categories, format, and label structure. Chose zip-extract method over per-file urllib (60x faster). Patched step-000 commit_sha to bfb3082.
+
+
+2026-08-09 step-002: Implemented NAB scoring protocol (src/scoring.py). Three profiles (standard, reward_low_fp, reward_low_fn) with exact weights from NAB config/profiles.json (primary source: github.com/numenta/NAB). Core functions: scaled_sigmoid matching NAB's scaledSigmoid exactly, score_stream for per-file scoring at a given threshold, score_corpus for corpus-level normalisation (null=0, perfect=100). 29 new tests (49 total, all green). Probationary period matches NAB: min(floor(0.15*n), 750). Patched step-001 commit_sha to 74b7991. No new dependencies (stdlib only: json, math, os, datetime).

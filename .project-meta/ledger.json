@@ -3,7 +3,7 @@
   "project": "nab-anomaly-detector",
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
-  "step_pointer": 2,
+  "step_pointer": 3,
   "last_green_tag": null,
   "steps": [
     {
@@ -13,25 +13,17 @@
       "commit_sha": "bfb30824d308e198b1fc0250767d77ced5984a06",
       "tests_green": true,
       "files_touched": [
-        "README.md",
-        "docs/WALKTHROUGH.md",
-        "src/__init__.py",
-        "src/meta.py",
-        "tests/test_scaffold.py",
-        ".github/workflows/ci.yml",
-        "requirements.txt",
-        ".gitignore",
-        ".project-meta/spec.md",
-        ".project-meta/plan.json",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log",
-        "data/.gitkeep",
-        "results/.gitkeep"
+        "README.md", "docs/WALKTHROUGH.md", "src/__init__.py",
+        "src/meta.py", "tests/test_scaffold.py",
+        ".github/workflows/ci.yml", "requirements.txt", ".gitignore",
+        ".project-meta/spec.md", ".project-meta/plan.json",
+        ".project-meta/ledger.json", ".project-meta/decisions.log",
+        "data/.gitkeep", "results/.gitkeep"
       ],
       "layman_note": {
         "what": "Built the project skeleton: folders, README, walkthrough, tests, CI, and a frozen 21-step plan.",
-        "why": "Every later step builds on a tested, scope-locked base \u00e2\u20ac\u201d no drift possible.",
-        "concept": "Scaffold \u00e2\u20ac\u201d the empty-but-working skeleton built before any real logic, so the project stays green from day one.",
+        "why": "Every later step builds on a tested, scope-locked base — no drift possible.",
+        "concept": "Scaffold — the empty-but-working skeleton built before any real logic, so the project stays green from day one.",
         "next": "Download the NAB dataset and document what is inside those 58 data streams."
       }
     },
@@ -39,23 +31,37 @@
       "id": "step-001",
       "status": "done",
       "done_on": "2026-08-07",
+      "commit_sha": "74b7991",
+      "tests_green": true,
+      "files_touched": [
+        "src/download_nab.py", "tests/test_nab_data.py",
+        "docs/WALKTHROUGH.md", ".gitignore",
+        ".github/workflows/ci.yml",
+        ".project-meta/ledger.json", ".project-meta/decisions.log"
+      ],
+      "layman_note": {
+        "what": "Downloaded the full NAB dataset (58 CSV streams across 7 categories, plus ground-truth anomaly labels) via a reusable download script.",
+        "why": "The benchmark data is the raw material for everything that follows.",
+        "concept": "Data ingestion — writing a script that fetches, organises, and validates a dataset so the pipeline starts from a clean, verified base.",
+        "next": "Implement the NAB scoring protocol so we can actually measure how good (or bad) our detectors are."
+      }
+    },
+    {
+      "id": "step-002",
+      "status": "done",
+      "done_on": "2026-08-09",
       "commit_sha": null,
       "commit_sha_note": "SHA derived from git log next run (commit includes this file)",
       "tests_green": true,
       "files_touched": [
-        "src/download_nab.py",
-        "tests/test_nab_data.py",
-        "docs/WALKTHROUGH.md",
-        ".gitignore",
-        ".github/workflows/ci.yml",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
+        "src/scoring.py", "tests/test_scoring.py",
+        ".project-meta/ledger.json", ".project-meta/decisions.log"
       ],
       "layman_note": {
-        "what": "Downloaded the full NAB dataset (58 CSV streams across 7 categories, plus ground-truth anomaly labels) via a reusable download script.",
-        "why": "The benchmark data is the raw material for everything that follows. Without it, there is nothing to detect anomalies in, nothing to score against.",
-        "concept": "Data ingestion \u2014 writing a script that fetches, organises, and validates a dataset so the pipeline starts from a clean, verified base.",
-        "next": "Implement the NAB scoring protocol so we can actually measure how good (or bad) our detectors are."
+        "what": "Implemented the NAB scoring protocol with 3 application profiles (standard, reward-low-FP, reward-low-FN) and 29 unit tests covering null/perfect/partial detectors, FP penalties, early-vs-late detection, and probationary period exclusion.",
+        "why": "The scorer is the ruler that measures every detector we build — without it, there is no way to compare our results to the published NAB leaderboard.",
+        "concept": "NAB scoring — a scaled sigmoid rewards early detection within an anomaly window and penalises false alarms; scores are normalised so a null detector = 0 and a perfect detector = 100.",
+        "next": "Implement a null detector and verify it scores exactly 0 on the real NAB data — validating the scoring pipeline end-to-end."
       }
     }
   ]
