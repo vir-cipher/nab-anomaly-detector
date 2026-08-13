@@ -3,7 +3,7 @@
   "project": "nab-anomaly-detector",
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
-  "step_pointer": 3,
+  "step_pointer": 4,
   "last_green_tag": null,
   "steps": [
     {
@@ -50,18 +50,36 @@
       "id": "step-002",
       "status": "done",
       "done_on": "2026-08-09",
-      "commit_sha": null,
-      "commit_sha_note": "SHA derived from git log next run (commit includes this file)",
+      "commit_sha": "1a0f2ab",
       "tests_green": true,
       "files_touched": [
         "src/scoring.py", "tests/test_scoring.py",
         ".project-meta/ledger.json", ".project-meta/decisions.log"
       ],
       "layman_note": {
-        "what": "Implemented the NAB scoring protocol with 3 application profiles (standard, reward-low-FP, reward-low-FN) and 29 unit tests covering null/perfect/partial detectors, FP penalties, early-vs-late detection, and probationary period exclusion.",
+        "what": "Implemented the NAB scoring protocol with 3 application profiles (standard, reward-low-FP, reward-low-FN) and 29 unit tests.",
         "why": "The scorer is the ruler that measures every detector we build — without it, there is no way to compare our results to the published NAB leaderboard.",
         "concept": "NAB scoring — a scaled sigmoid rewards early detection within an anomaly window and penalises false alarms; scores are normalised so a null detector = 0 and a perfect detector = 100.",
         "next": "Implement a null detector and verify it scores exactly 0 on the real NAB data — validating the scoring pipeline end-to-end."
+      }
+    },
+    {
+      "id": "step-003",
+      "status": "done",
+      "done_on": "2026-08-13",
+      "commit_sha": null,
+      "commit_sha_note": "SHA derived from git log post-push (commit includes this file)",
+      "tests_green": true,
+      "files_touched": [
+        "src/detectors.py", "src/data_loader.py", "src/run_baseline.py",
+        "tests/test_detectors.py", "results/null_baseline.json",
+        ".project-meta/ledger.json", ".project-meta/decisions.log"
+      ],
+      "layman_note": {
+        "what": "Built a null detector (always says 'no anomaly'), a data loader for all 58 NAB streams, and a scoring runner. Null detector scores exactly 0.0 on all 3 profiles — validating the full pipeline end-to-end.",
+        "why": "The null baseline proves the scoring pipeline works correctly before we plug in real detectors. Score 0.0 is the mathematical expectation — any other number would mean the scorer is broken.",
+        "concept": "Baseline — a deliberately simple detector whose expected score is known in advance; if the measured score matches, the pipeline is trustworthy.",
+        "next": "Reproduce at least 1 published NAB baseline score and validate against published numbers."
       }
     }
   ]

@@ -1,0 +1,24 @@
+{
+  "detector": "null",
+  "threshold": 0.5,
+  "profiles": {
+    "standard": {
+      "nab_score": 0.0,
+      "raw_score": -116.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    "reward_low_fp": {
+      "nab_score": 0.0,
+      "raw_score": -116.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    "reward_low_fn": {
+      "nab_score": 0.0,
+      "raw_score": -232.0,
+      "num_streams": 58,
+      "total_windows": 116
+    }
+  }
+}
