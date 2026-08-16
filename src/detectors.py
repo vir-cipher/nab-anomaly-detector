@@ -6,11 +6,12 @@ in [0.0, 1.0].  This mirrors how real-time detectors work —
 you cannot peek ahead.
 
 Usage:
-    from src.detectors import NullDetector
-    det = NullDetector()
+    from src.detectors import NullDetector, WindowedGaussianDetector
+    det = WindowedGaussianDetector()
     score = det.handle_record(timestamp, value)
 """
 
+import math
 from abc import ABC, abstractmethod
 
 
@@ -54,3 +55,97 @@ class NullDetector(Detector):
     def handle_record(self, timestamp, value):
         """Always returns 0.0 — nothing is ever anomalous."""
         return 0.0
+
+
+# ---------------------------------------------------------------------------
+# Windowed Gaussian detector — matches NAB reference implementation
+# Primary source: github.com/numenta/NAB/blob/master/nab/detectors/
+#   gaussian/windowedGaussian_detector.py
+# Published NAB scores: standard=39.6, low_fp=20.9, low_fn=47.4
+# ---------------------------------------------------------------------------
+
+def _normal_tail_probability(x, mean, std):
+    """Tail probability of the normal distribution (Q-function).
+
+    Returns P(X > x) for X ~ N(mean, std^2).
+    Uses math.erfc for numerical stability.
+    Mirrors NAB's ``normalProbability`` exactly.
+    """
+    if x < mean:
+        return _normal_tail_probability(2 * mean - x, mean, std)
+    z = (x - mean) / std
+    return 0.5 * math.erfc(z / math.sqrt(2))
+
+
+class WindowedGaussianDetector(Detector):
+    """Sliding-window Gaussian anomaly detector.
+
+    Maintains a window of recent values, computes their mean and
+    standard deviation, and scores each new point by how unlikely
+    it is under that Gaussian: score = 1 - Q(value, mean, std).
+
+    Uses incremental statistics for O(1) per-point updates.
+    Window and step sizes match NAB reference (6400 / 100).
+    """
+
+    def __init__(self, window_size=6400, step_size=100):
+        self.window_size = window_size
+        self.step_size = step_size
+        self.window_data = []
+        self.step_buffer = []
+        self._sum = 0.0
+        self._sum_sq = 0.0
+        self.mean = 0.0
+        self.std = 1.0
+
+    def handle_record(self, timestamp, value):
+        """Return anomaly score for one data point."""
+        score = 0.0
+        if len(self.window_data) > 0:
+            score = 1.0 - _normal_tail_probability(
+                value, self.mean, self.std)
+
+        if len(self.window_data) < self.window_size:
+            self.window_data.append(value)
+            self._sum += value
+            self._sum_sq += value * value
+            self._recompute_from_sums()
+        else:
+            self.step_buffer.append(value)
+            if len(self.step_buffer) == self.step_size:
+                removed = self.window_data[:self.step_size]
+                self.window_data = self.window_data[self.step_size:]
+                self.window_data.extend(self.step_buffer)
+                for v in removed:
+                    self._sum -= v
+                    self._sum_sq -= v * v
+                for v in self.step_buffer:
+                    self._sum += v
+                    self._sum_sq += v * v
+                self.step_buffer = []
+                self._recompute_from_sums()
+
+        return score
+
+    def _recompute_from_sums(self):
+        """Derive mean and std from running sums — O(1)."""
+        n = len(self.window_data)
+        if n == 0:
+            self.mean, self.std = 0.0, 1.0
+            return
+        self.mean = self._sum / n
+        variance = self._sum_sq / n - self.mean * self.mean
+        if variance < 0:
+            variance = 0.0   # guard floating-point underflow
+        self.std = math.sqrt(variance)
+        if self.std == 0.0:
+            self.std = 1e-6
+
+    def reset(self):
+        """Reset for a new stream."""
+        self.window_data = []
+        self.step_buffer = []
+        self._sum = 0.0
+        self._sum_sq = 0.0
+        self.mean = 0.0
+        self.std = 1.0

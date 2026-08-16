@@ -293,3 +293,151 @@ def score_corpus(results, windows, threshold, profile="standard",
         "profile": profile,
         "num_streams": len(results),
     }
+
+
+
+# ---------------------------------------------------------------------------
+# Sweep-based threshold optimiser (matches NAB's approach)
+# Pre-computes per-point sweep scores, sorts all points by anomaly score,
+# then sweeps once to find the optimal threshold.  O(N log N) total.
+# ---------------------------------------------------------------------------
+
+def _compute_sweep_scores(timestamps, anomaly_scores, windows,
+                          profile="standard",
+                          probationary_pct=DEFAULT_PROBATIONARY_PCT):
+    """Assign a sweep score to every point in one stream.
+
+    Returns list of (anomaly_score, sweep_score, window_id_or_None)
+    for each non-probationary point.
+    window_id is a unique string per window (stream_name|window_start).
+    """
+    weights = PROFILES[profile]
+    tp_w = weights["tp_weight"]
+    fp_w = weights["fp_weight"]
+
+    n = len(timestamps)
+    if n == 0:
+        return []
+
+    prob_len = _probationary_length(n, probationary_pct)
+    max_tp = scaled_sigmoid(-1.0)
+
+    # Build window index ranges
+    window_ranges = _window_index_ranges(timestamps, windows)
+    point_to_window = [None] * n
+    for w_idx, (left, right) in enumerate(window_ranges):
+        for i in range(left, right + 1):
+            point_to_window[i] = w_idx
+
+    result = []
+    prev_right = None
+    prev_width = None
+
+    for i in range(prob_len, n):
+        w_idx = point_to_window[i]
+
+        if w_idx is not None:
+            left, right = window_ranges[w_idx]
+            width = float(right - left + 1)
+            position = -(right - i + 1) / width
+            unweighted = scaled_sigmoid(position)
+            sweep_sc = unweighted * tp_w / max_tp
+            result.append((anomaly_scores[i], sweep_sc, w_idx))
+            if i == right:
+                prev_right = right
+                prev_width = width
+        else:
+            if prev_right is None:
+                unweighted = -1.0
+            else:
+                dist = abs(prev_right - i)
+                denom = max(prev_width - 1, 1.0)
+                unweighted = scaled_sigmoid(dist / denom)
+            sweep_sc = unweighted * fp_w
+            result.append((anomaly_scores[i], sweep_sc, None))
+
+    return result
+
+
+def sweep_optimize(results, windows, profile="standard",
+                   probationary_pct=DEFAULT_PROBATIONARY_PCT):
+    """Find optimal threshold via NAB-style sweep.
+
+    1. Pre-compute sweep score for every point across all streams.
+    2. Sort by anomaly score (descending).
+    3. Sweep once: each unique anomaly score is a candidate threshold.
+       Track running score, return the maximum.
+
+    Returns:
+        dict: best_threshold, best_nab_score, raw_score, total_windows.
+    """
+    weights = PROFILES[profile]
+    fn_w = weights["fn_weight"]
+
+    # Collect sweep points from all streams, tracking window IDs globally
+    all_points = []       # (anomaly_score, sweep_score, global_window_id)
+    window_id_set = set()
+    global_win_counter = 0
+    total_windows = 0
+
+    for stream_name, (ts, scores) in results.items():
+        stream_wins = windows.get(stream_name, [])
+        pts = _compute_sweep_scores(
+            ts, scores, stream_wins,
+            profile=profile, probationary_pct=probationary_pct)
+        # Remap local window indices to global unique IDs
+        local_to_global = {}
+        for w_idx in range(len(stream_wins)):
+            local_to_global[w_idx] = global_win_counter
+            window_id_set.add(global_win_counter)
+            global_win_counter += 1
+            total_windows += 1
+        for anom_sc, sweep_sc, w_idx in pts:
+            gw = local_to_global[w_idx] if w_idx is not None else None
+            all_points.append((anom_sc, sweep_sc, gw))
+
+    # Sort by anomaly score descending (highest = tightest threshold first)
+    all_points.sort(key=lambda x: x[0], reverse=True)
+
+    # Initialize score parts: each window starts at -fnWeight (fully missed)
+    score_parts = {"fp": 0.0}
+    for wid in window_id_set:
+        score_parts[wid] = -fn_w
+
+    best_score = sum(score_parts.values())  # all-FN starting score
+    best_threshold = 1.1
+    cur_threshold = 1.1
+
+    for anom_sc, sweep_sc, gw in all_points:
+        # New threshold level — evaluate current score
+        if anom_sc != cur_threshold:
+            cur_score = sum(score_parts.values())
+            if cur_score > best_score:
+                best_score = cur_score
+                best_threshold = cur_threshold
+            cur_threshold = anom_sc
+
+        # Activate this point (it's above the current threshold)
+        if gw is None:
+            score_parts["fp"] += sweep_sc
+        else:
+            score_parts[gw] = max(score_parts[gw], sweep_sc)
+
+    # Final threshold check
+    cur_score = sum(score_parts.values())
+    if cur_score > best_score:
+        best_score = cur_score
+        best_threshold = cur_threshold
+
+    null_raw = null_score(total_windows, profile)
+    perfect_raw = perfect_score(total_windows, profile)
+    nab = normalize_score(best_score, null_raw, perfect_raw)
+
+    return {
+        "best_threshold": best_threshold,
+        "best_nab_score": nab,
+        "raw_score": best_score,
+        "null_raw": null_raw,
+        "perfect_raw": perfect_raw,
+        "total_windows": total_windows,
+    }

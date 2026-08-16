@@ -1,0 +1,27 @@
+{
+  "detector": "gaussian",
+  "optimized": true,
+  "profiles": {
+    "standard": {
+      "nab_score": 40.1349,
+      "raw_score": -22.8871,
+      "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    "reward_low_fp": {
+      "nab_score": 23.9439,
+      "raw_score": -60.4502,
+      "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    "reward_low_fn": {
+      "nab_score": 47.7336,
+      "raw_score": -65.8871,
+      "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    }
+  }
+}
