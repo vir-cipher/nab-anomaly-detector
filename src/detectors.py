@@ -6,7 +6,7 @@ in [0.0, 1.0].  This mirrors how real-time detectors work —
 you cannot peek ahead.
 
 Usage:
-    from src.detectors import NullDetector, WindowedGaussianDetector
+    from src.detectors import NullDetector, WindowedGaussianDetector, EWMADetector
     det = WindowedGaussianDetector()
     score = det.handle_record(timestamp, value)
 """
@@ -149,3 +149,85 @@ class WindowedGaussianDetector(Detector):
         self._sum_sq = 0.0
         self.mean = 0.0
         self.std = 1.0
+
+
+# ---------------------------------------------------------------------------
+# EWMA (Exponentially Weighted Moving Average) detector — step-005
+# Classic streaming detector: lightweight, O(1) per point, no window needed.
+# Scores via the same tail-probability method as WindowedGaussianDetector.
+# ---------------------------------------------------------------------------
+
+class EWMADetector(Detector):
+    """Exponentially Weighted Moving Average anomaly detector.
+
+    Maintains a smoothed running average and variance of values.
+    After a short warmup period (initial statistics gathered),
+    scores each point by how far it deviates from the EWMA
+    prediction, using the same tail-probability method as
+    WindowedGaussianDetector.
+
+    Advantages over windowed approaches:
+    - O(1) memory (no window buffer needed).
+    - Naturally weights recent values more heavily.
+    - Single tuning knob (alpha).
+
+    Parameters:
+        alpha:  Smoothing factor in (0, 1). Higher = faster
+                reaction to level changes. Default 0.1.
+        warmup: Number of initial points to collect before
+                scoring.  During warmup the detector gathers
+                mean/variance estimates and returns 0.0.
+                Default 10.
+    """
+
+    def __init__(self, alpha=0.1, warmup=10):
+        self.alpha = alpha
+        self.warmup = warmup
+        self._ewma = None
+        self._ewma_var = 0.0
+        self._count = 0
+        self._warmup_values = []
+
+    def handle_record(self, timestamp, value):
+        """Process one data point and return an anomaly score.
+
+        During warmup (first ``warmup`` points), collects values
+        to initialise the EWMA mean and variance, returning 0.0.
+        After warmup, scores each point by its deviation from the
+        current EWMA estimate.
+        """
+        self._count += 1
+
+        # --- warmup phase: collect data, return 0.0 ---
+        if self._count <= self.warmup:
+            self._warmup_values.append(value)
+            if self._count == self.warmup:
+                n = len(self._warmup_values)
+                mean = sum(self._warmup_values) / n
+                self._ewma = mean
+                self._ewma_var = (
+                    sum((v - mean) ** 2 for v in self._warmup_values) / n
+                )
+                self._warmup_values = []  # free memory
+            return 0.0
+
+        # --- scoring phase ---
+        # Deviation from current EWMA prediction
+        std = math.sqrt(self._ewma_var) if self._ewma_var > 0 else 1e-6
+        score = 1.0 - _normal_tail_probability(value, self._ewma, std)
+
+        # Update EWMA mean and variance
+        error = value - self._ewma
+        self._ewma = self.alpha * value + (1 - self.alpha) * self._ewma
+        self._ewma_var = (
+            self.alpha * (error ** 2) + (1 - self.alpha) * self._ewma_var
+        )
+
+        return max(0.0, min(1.0, score))
+
+    def reset(self):
+        """Reset internal state for a new stream."""
+        self._ewma = None
+        self._ewma_var = 0.0
+        self._count = 0
+        self._warmup_values = []

@@ -13,7 +13,7 @@ import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.detectors import NullDetector, WindowedGaussianDetector, Detector
+from src.detectors import NullDetector, WindowedGaussianDetector, EWMADetector, Detector
 from src.data_loader import load_stream, load_all_streams
 from src.scoring import load_windows, score_corpus, sweep_optimize
 
@@ -250,3 +250,152 @@ class TestWindowedGaussianOnNAB:
         assert data["detector"] == "gaussian"
         assert data["optimized"] is True
         assert data["profiles"]["standard"]["nab_score"] > 0
+
+
+# -------------------------------------------------------------------
+# EWMA detector unit tests (step-005)
+# Gate: EWMA detector passes unit tests, produces anomaly scores
+#       on sample data.
+# -------------------------------------------------------------------
+
+class TestEWMADetectorUnit:
+    """Unit tests for EWMADetector."""
+
+    def test_implements_detector(self):
+        assert issubclass(EWMADetector, Detector)
+
+    def test_name(self):
+        assert EWMADetector().name == "EWMADetector"
+
+    def test_default_params(self):
+        det = EWMADetector()
+        assert det.alpha == 0.1
+        assert det.warmup == 10
+
+    def test_custom_params(self):
+        det = EWMADetector(alpha=0.3, warmup=20)
+        assert det.alpha == 0.3
+        assert det.warmup == 20
+
+    def test_returns_zero_during_warmup(self):
+        """All points during warmup must return 0.0."""
+        det = EWMADetector(warmup=10)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(10):
+            score = det.handle_record(
+                base + timedelta(minutes=i), float(i + 1))
+            assert score == 0.0, f"warmup point {i} scored {score}"
+
+    def test_scores_after_warmup(self):
+        """Points after warmup must produce non-trivial scores."""
+        det = EWMADetector(warmup=5)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        # Feed 5 warmup points (all 10.0)
+        for i in range(5):
+            det.handle_record(base + timedelta(minutes=i), 10.0)
+        # Point after warmup — same value, should be low score
+        score = det.handle_record(base + timedelta(minutes=5), 10.0)
+        assert 0.0 <= score <= 1.0
+
+    def test_score_in_range(self):
+        """All scores must be in [0.0, 1.0]."""
+        det = EWMADetector(warmup=5)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(200):
+            val = 10.0 + (500.0 if i == 150 else 0.0)
+            score = det.handle_record(base + timedelta(minutes=i), val)
+            assert 0.0 <= score <= 1.0, f"score {score} at i={i}"
+
+    def test_spike_scores_higher(self):
+        """A large spike after stable data must score higher."""
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        # Detector 1: all normal
+        det1 = EWMADetector(warmup=5)
+        for i in range(60):
+            det1.handle_record(base + timedelta(minutes=i), 10.0)
+        normal = det1.handle_record(base + timedelta(minutes=60), 10.0)
+        # Detector 2: spike at the end
+        det2 = EWMADetector(warmup=5)
+        for i in range(60):
+            det2.handle_record(base + timedelta(minutes=i), 10.0)
+        spike = det2.handle_record(base + timedelta(minutes=60), 1000.0)
+        assert spike > normal
+
+    def test_reset_clears_state(self):
+        """After reset, detector behaves like a fresh instance."""
+        det = EWMADetector(warmup=5)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(20):
+            det.handle_record(base + timedelta(minutes=i), float(i))
+        det.reset()
+        assert det._ewma is None
+        assert det._count == 0
+        # First point after reset must return 0.0 (warmup)
+        assert det.handle_record(base, 999.0) == 0.0
+
+    def test_adapts_to_level_shift(self):
+        """EWMA should adapt: after a level shift, scores decrease."""
+        det = EWMADetector(alpha=0.3, warmup=5)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        # 20 points at level 10
+        for i in range(20):
+            det.handle_record(base + timedelta(minutes=i), 10.0)
+        # Jump to level 50 — first point should score high
+        first_at_50 = det.handle_record(
+            base + timedelta(minutes=20), 50.0)
+        # After 30 more points at 50, detector adapts
+        for i in range(30):
+            det.handle_record(
+                base + timedelta(minutes=21 + i), 50.0)
+        adapted_at_50 = det.handle_record(
+            base + timedelta(minutes=51), 50.0)
+        assert first_at_50 > adapted_at_50
+
+    def test_o1_memory(self):
+        """EWMA uses constant memory (no growing buffers)."""
+        det = EWMADetector(warmup=5)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(10000):
+            det.handle_record(base + timedelta(minutes=i), float(i))
+        assert len(det._warmup_values) == 0
+
+
+# -------------------------------------------------------------------
+# EWMA on sample NAB data (step-005 gate: produces scores on sample)
+# -------------------------------------------------------------------
+
+class TestEWMAOnSampleData:
+    """Run EWMA on a real NAB stream and verify it produces scores."""
+
+    def test_scores_on_nyc_taxi(self):
+        """EWMA produces valid scores on realKnownCause/nyc_taxi."""
+        streams = load_all_streams()
+        ts, vals = streams["realKnownCause/nyc_taxi.csv"]
+        det = EWMADetector()
+        scores = [det.handle_record(t, v) for t, v in zip(ts, vals)]
+        # All scores in range
+        assert all(0.0 <= s <= 1.0 for s in scores)
+        # Not all zeros (detector should flag something)
+        assert any(s > 0.0 for s in scores)
+        # Warmup points are zero
+        assert all(s == 0.0 for s in scores[:det.warmup])
+
+    def test_scores_on_multiple_streams(self):
+        """EWMA produces valid scores on at least 5 different streams."""
+        streams = load_all_streams()
+        keys = list(streams.keys())[:5]
+        for key in keys:
+            ts, vals = streams[key]
+            det = EWMADetector()
+            scores = [det.handle_record(t, v)
+                      for t, v in zip(ts, vals)]
+            assert all(0.0 <= s <= 1.0 for s in scores), (
+                f"score out of range on {key}")
+            assert len(scores) == len(ts)

@@ -3,7 +3,7 @@
   "project": "nab-anomaly-detector",
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
-  "step_pointer": 5,
+  "step_pointer": 6,
   "last_green_tag": null,
   "steps": [
     {
@@ -120,6 +120,26 @@
         "why": "Reproducing a published score proves scoring pipeline plus detector match the original benchmark.",
         "concept": "Windowed Gaussian: slides a fixed-size window, computing mean and std incrementally O(1). Points far from the mean score high via the Q-function tail probability.",
         "next": "Implement a second detector and compare against the Gaussian baseline."
+      }
+    },
+    {
+      "id": "step-005",
+      "status": "done",
+      "done_on": "2026-08-19",
+      "commit_sha": null,
+      "commit_sha_note": "SHA from git log post-push",
+      "tests_green": true,
+      "files_touched": [
+        "src/detectors.py",
+        "tests/test_detectors.py",
+        ".project-meta/ledger.json",
+        ".project-meta/decisions.log"
+      ],
+      "layman_note": {
+        "what": "Implemented EWMA (Exponentially Weighted Moving Average) detector with streaming interface, warmup phase, and O(1) memory. 13 new tests, 92/92 green.",
+        "why": "EWMA is the first statistical detector for the benchmark comparison. Unlike the windowed Gaussian, it uses no buffer — just a smoothed average that weights recent values more heavily. This starts Phase 12 (statistical detectors).",
+        "concept": "EWMA: each new value updates a running average via alpha * new + (1-alpha) * old. Anomaly score = how far the current value is from the prediction, measured by a tail-probability function. O(1) memory, single tuning knob (alpha).",
+        "next": "Implement Z-score detector with streaming interface (step-006)."
       }
     }
   ]

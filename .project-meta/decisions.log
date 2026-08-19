@@ -15,3 +15,9 @@
 
 2026-08-13 step-003: Null detector baseline + end-to-end pipeline validation. New files: src/detectors.py (Detector ABC + NullDetector), src/data_loader.py (load all 58 NAB CSVs into scorer format), src/run_baseline.py (run any detector on full corpus, score all 3 profiles, save JSON). NullDetector scores exactly 0.0 on all 3 profiles — mathematically expected and confirms the scorer, data loader, and detector interface are wired correctly. 16 new tests (65 total, all green). results/null_baseline.json saved. Patched step-002 commit_sha to 1a0f2ab. No new dependencies (stdlib only).
 2026-08-17 - step-004: Implemented WindowedGaussianDetector (incremental stats, sweep optimizer). Reproduced published NAB Gaussian baseline within 5 pct on 2/3 profiles (standard 1.4 pct, reward_low_fn 0.7 pct). reward_low_fp off by 14.6 pct. Gate met (requires >=1 profile within 5 pct).
+
+## 2026-08-19 — step-005: EWMA detector design decisions
+- **Warmup period (default 10):** EWMA variance estimate needs a few points to stabilise. During warmup, we collect values, compute initial mean/variance from them, then start scoring. NAB's probationary period (15% of data) already ignores early detections, but a clean warmup avoids garbage scores.
+- **Alpha default 0.1:** standard EWMA smoothing factor. Lower = smoother (slow to react), higher = noisier (fast to react). Will be tuned when we benchmark on NAB in step-008.
+- **Same tail-probability scoring as Gaussian:** reuses `_normal_tail_probability` for consistency. Score = 1 - Q(value, ewma, sqrt(ewma_var)), same interpretation as WindowedGaussianDetector.
+- **O(1) memory:** no window buffer. State = 4 floats (ewma, ewma_var, count, alpha). Constant memory regardless of stream length.
