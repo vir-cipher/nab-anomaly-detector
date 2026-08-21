@@ -1,4 +1,4 @@
-"""Tests for anomaly detectors and end-to-end scoring pipeline.
+﻿"""Tests for anomaly detectors and end-to-end scoring pipeline.
 
 Step-003 gate: null detector scores ~0 on NAB.
 Step-004 gate: reproduce published Windowed Gaussian baseline
@@ -13,7 +13,7 @@ import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.detectors import NullDetector, WindowedGaussianDetector, EWMADetector, Detector
+from src.detectors import NullDetector, WindowedGaussianDetector, EWMADetector, ZScoreDetector, Detector
 from src.data_loader import load_stream, load_all_streams
 from src.scoring import load_windows, score_corpus, sweep_optimize
 
@@ -295,7 +295,7 @@ class TestEWMADetectorUnit:
         # Feed 5 warmup points (all 10.0)
         for i in range(5):
             det.handle_record(base + timedelta(minutes=i), 10.0)
-        # Point after warmup — same value, should be low score
+        # Point after warmup â€” same value, should be low score
         score = det.handle_record(base + timedelta(minutes=5), 10.0)
         assert 0.0 <= score <= 1.0
 
@@ -346,7 +346,7 @@ class TestEWMADetectorUnit:
         # 20 points at level 10
         for i in range(20):
             det.handle_record(base + timedelta(minutes=i), 10.0)
-        # Jump to level 50 — first point should score high
+        # Jump to level 50 â€” first point should score high
         first_at_50 = det.handle_record(
             base + timedelta(minutes=20), 50.0)
         # After 30 more points at 50, detector adapts
@@ -394,6 +394,170 @@ class TestEWMAOnSampleData:
         for key in keys:
             ts, vals = streams[key]
             det = EWMADetector()
+            scores = [det.handle_record(t, v)
+                      for t, v in zip(ts, vals)]
+            assert all(0.0 <= s <= 1.0 for s in scores), (
+                f"score out of range on {key}")
+            assert len(scores) == len(ts)
+
+
+# -------------------------------------------------------------------
+# Z-score detector unit tests (step-006)
+# Gate: Z-score detector passes unit tests, produces anomaly scores
+#       on sample data.
+# -------------------------------------------------------------------
+
+class TestZScoreDetectorUnit:
+    """Unit tests for ZScoreDetector."""
+
+    def test_implements_detector(self):
+        assert issubclass(ZScoreDetector, Detector)
+
+    def test_name(self):
+        assert ZScoreDetector().name == "ZScoreDetector"
+
+    def test_default_params(self):
+        det = ZScoreDetector()
+        assert det.window_size == 128
+        assert det.warmup == 30
+
+    def test_custom_params(self):
+        det = ZScoreDetector(window_size=64, warmup=10)
+        assert det.window_size == 64
+        assert det.warmup == 10
+
+    def test_warmup_minimum_two(self):
+        """Warmup is clamped to >= 2 (need 2 points for std)."""
+        det = ZScoreDetector(warmup=1)
+        assert det.warmup == 2
+
+    def test_returns_zero_during_warmup(self):
+        """All points during warmup must return 0.0."""
+        det = ZScoreDetector(warmup=30)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(30):
+            score = det.handle_record(
+                base + timedelta(minutes=i), float(i + 1))
+            assert score == 0.0, f"warmup point {i} scored {score}"
+
+    def test_scores_after_warmup(self):
+        """Points after warmup must produce scores in [0, 1]."""
+        det = ZScoreDetector(warmup=10)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(10):
+            det.handle_record(base + timedelta(minutes=i), 10.0)
+        score = det.handle_record(base + timedelta(minutes=10), 10.0)
+        assert 0.0 <= score <= 1.0
+
+    def test_score_in_range(self):
+        """All scores must be in [0.0, 1.0]."""
+        det = ZScoreDetector(window_size=50, warmup=10)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(200):
+            val = 10.0 + (500.0 if i == 150 else 0.0)
+            score = det.handle_record(base + timedelta(minutes=i), val)
+            assert 0.0 <= score <= 1.0, f"score {score} at i={i}"
+
+    def test_spike_scores_higher(self):
+        """A large spike after stable data must score higher."""
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        det1 = ZScoreDetector(warmup=10)
+        for i in range(60):
+            det1.handle_record(base + timedelta(minutes=i), 10.0)
+        normal = det1.handle_record(base + timedelta(minutes=60), 10.0)
+        det2 = ZScoreDetector(warmup=10)
+        for i in range(60):
+            det2.handle_record(base + timedelta(minutes=i), 10.0)
+        spike = det2.handle_record(base + timedelta(minutes=60), 1000.0)
+        assert spike > normal
+
+    def test_reset_clears_state(self):
+        """After reset, detector behaves like a fresh instance."""
+        det = ZScoreDetector(warmup=5)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(20):
+            det.handle_record(base + timedelta(minutes=i), float(i))
+        det.reset()
+        assert len(det._window) == 0
+        assert det.handle_record(base, 999.0) == 0.0
+
+    def test_window_bounded(self):
+        """Window never exceeds window_size."""
+        det = ZScoreDetector(window_size=32, warmup=5)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(200):
+            det.handle_record(base + timedelta(minutes=i), float(i))
+        assert len(det._window) == 32
+
+    def test_forgets_old_data(self):
+        """After sliding past old data, detector adapts to new level."""
+        det = ZScoreDetector(window_size=50, warmup=10)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        # 50 points at level 10
+        for i in range(50):
+            det.handle_record(base + timedelta(minutes=i), 10.0)
+        # Jump to level 100 -- first point scores high
+        first_at_100 = det.handle_record(
+            base + timedelta(minutes=50), 100.0)
+        # Feed 60 more at 100 so old data fully slides out
+        for i in range(60):
+            det.handle_record(
+                base + timedelta(minutes=51 + i), 100.0)
+        adapted_at_100 = det.handle_record(
+            base + timedelta(minutes=111), 100.0)
+        assert first_at_100 > adapted_at_100
+
+    def test_different_from_ewma_on_same_input(self):
+        """Z-score and EWMA produce different score sequences."""
+        from datetime import timedelta
+        import random
+        base = datetime(2024, 1, 1)
+        random.seed(42)
+        data = [random.gauss(50, 10) for _ in range(100)]
+        z_det = ZScoreDetector(warmup=10)
+        e_det = EWMADetector(warmup=10)
+        z_scores = [z_det.handle_record(
+            base + timedelta(minutes=i), v) for i, v in enumerate(data)]
+        e_scores = [e_det.handle_record(
+            base + timedelta(minutes=i), v) for i, v in enumerate(data)]
+        # After warmup, at least some scores should differ
+        z_post = z_scores[15:]
+        e_post = e_scores[15:]
+        diffs = [abs(z - e) for z, e in zip(z_post, e_post)]
+        assert max(diffs) > 0.01, "Z-score and EWMA should differ"
+
+
+# -------------------------------------------------------------------
+# Z-score on sample NAB data (step-006 gate: produces scores on sample)
+# -------------------------------------------------------------------
+
+class TestZScoreOnSampleData:
+    """Run Z-score on a real NAB stream and verify it produces scores."""
+
+    def test_scores_on_nyc_taxi(self):
+        """Z-score produces valid scores on realKnownCause/nyc_taxi."""
+        streams = load_all_streams()
+        ts, vals = streams["realKnownCause/nyc_taxi.csv"]
+        det = ZScoreDetector()
+        scores = [det.handle_record(t, v) for t, v in zip(ts, vals)]
+        assert all(0.0 <= s <= 1.0 for s in scores)
+        assert any(s > 0.0 for s in scores)
+        assert all(s == 0.0 for s in scores[:det.warmup])
+
+    def test_scores_on_multiple_streams(self):
+        """Z-score produces valid scores on at least 5 different streams."""
+        streams = load_all_streams()
+        keys = list(streams.keys())[:5]
+        for key in keys:
+            ts, vals = streams[key]
+            det = ZScoreDetector()
             scores = [det.handle_record(t, v)
                       for t, v in zip(ts, vals)]
             assert all(0.0 <= s <= 1.0 for s in scores), (

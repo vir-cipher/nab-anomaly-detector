@@ -1,12 +1,12 @@
-"""Anomaly detectors for the NAB benchmark.
+﻿"""Anomaly detectors for the NAB benchmark.
 
 Each detector implements a streaming interface: feed one
 (timestamp, value) pair at a time, get back an anomaly score
-in [0.0, 1.0].  This mirrors how real-time detectors work —
+in [0.0, 1.0].  This mirrors how real-time detectors work â€”
 you cannot peek ahead.
 
 Usage:
-    from src.detectors import NullDetector, WindowedGaussianDetector, EWMADetector
+    from src.detectors import NullDetector, WindowedGaussianDetector, EWMADetector, ZScoreDetector
     det = WindowedGaussianDetector()
     score = det.handle_record(timestamp, value)
 """
@@ -28,7 +28,7 @@ class Detector(ABC):
 
         Args:
             timestamp: datetime object for this data point.
-            value:     float — the observed measurement.
+            value:     float â€” the observed measurement.
 
         Returns:
             float in [0.0, 1.0] where 0.0 = normal, 1.0 = anomaly.
@@ -53,12 +53,12 @@ class NullDetector(Detector):
     """
 
     def handle_record(self, timestamp, value):
-        """Always returns 0.0 — nothing is ever anomalous."""
+        """Always returns 0.0 â€” nothing is ever anomalous."""
         return 0.0
 
 
 # ---------------------------------------------------------------------------
-# Windowed Gaussian detector — matches NAB reference implementation
+# Windowed Gaussian detector â€” matches NAB reference implementation
 # Primary source: github.com/numenta/NAB/blob/master/nab/detectors/
 #   gaussian/windowedGaussian_detector.py
 # Published NAB scores: standard=39.6, low_fp=20.9, low_fn=47.4
@@ -128,7 +128,7 @@ class WindowedGaussianDetector(Detector):
         return score
 
     def _recompute_from_sums(self):
-        """Derive mean and std from running sums — O(1)."""
+        """Derive mean and std from running sums â€” O(1)."""
         n = len(self.window_data)
         if n == 0:
             self.mean, self.std = 0.0, 1.0
@@ -152,7 +152,7 @@ class WindowedGaussianDetector(Detector):
 
 
 # ---------------------------------------------------------------------------
-# EWMA (Exponentially Weighted Moving Average) detector — step-005
+# EWMA (Exponentially Weighted Moving Average) detector â€” step-005
 # Classic streaming detector: lightweight, O(1) per point, no window needed.
 # Scores via the same tail-probability method as WindowedGaussianDetector.
 # ---------------------------------------------------------------------------
@@ -231,3 +231,84 @@ class EWMADetector(Detector):
         self._ewma_var = 0.0
         self._count = 0
         self._warmup_values = []
+
+# ---------------------------------------------------------------------------
+# Z-score detector -- step-006
+# Classic rolling-window Z-score: small sliding window, scores each point
+# by how many standard deviations it falls from the window mean.
+# Faster reaction than WindowedGaussian (128 vs 6400 default window),
+# updates every point (no step buffer), uses deque for O(1) sliding.
+# ---------------------------------------------------------------------------
+
+from collections import deque as _deque
+
+
+class ZScoreDetector(Detector):
+    """Rolling Z-score anomaly detector.
+
+    Maintains a small sliding window of recent values using a
+    deque.  For each new point, computes its z-score against the
+    window's mean and standard deviation, then converts to an
+    anomaly score via tail probability (same method as the other
+    detectors, so scores are directly comparable).
+
+    Compared to WindowedGaussianDetector:
+    - Smaller default window (128 vs 6400) -- reacts faster
+      to local shifts.
+    - Updates statistics every point (no step buffer).
+    - Uses collections.deque for efficient O(1) sliding.
+
+    Compared to EWMADetector:
+    - Fixed-size window with equal weighting (bounded memory).
+    - Old data forgotten completely once it slides out, rather
+      than decaying exponentially.
+
+    Parameters:
+        window_size: Number of recent values to keep. Default 128.
+        warmup:      Minimum points collected before scoring
+                     begins. Default 30.  Must be >= 2 so that
+                     a meaningful std can be computed.
+    """
+
+    def __init__(self, window_size=128, warmup=30):
+        self.window_size = window_size
+        self.warmup = max(warmup, 2)
+        self._window = _deque(maxlen=window_size)
+        self._sum = 0.0
+        self._sum_sq = 0.0
+
+    def handle_record(self, timestamp, value):
+        """Process one data point and return an anomaly score.
+
+        During warmup (fewer than ``warmup`` points in the window),
+        returns 0.0.  After warmup, scores each point by its
+        deviation from the current window statistics.
+        """
+        # --- score against current window (before adding new point) ---
+        score = 0.0
+        n = len(self._window)
+        if n >= self.warmup:
+            mean = self._sum / n
+            variance = self._sum_sq / n - mean * mean
+            if variance < 0:
+                variance = 0.0
+            std = math.sqrt(variance) if variance > 0 else 1e-6
+            score = 1.0 - _normal_tail_probability(value, mean, std)
+            score = max(0.0, min(1.0, score))
+
+        # --- slide the window ---
+        if len(self._window) == self.window_size:
+            old = self._window[0]
+            self._sum -= old
+            self._sum_sq -= old * old
+        self._window.append(value)
+        self._sum += value
+        self._sum_sq += value * value
+
+        return score
+
+    def reset(self):
+        """Reset internal state for a new stream."""
+        self._window.clear()
+        self._sum = 0.0
+        self._sum_sq = 0.0

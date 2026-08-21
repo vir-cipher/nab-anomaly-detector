@@ -3,7 +3,7 @@
   "project": "nab-anomaly-detector",
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
-  "step_pointer": 6,
+  "step_pointer": 7,
   "last_green_tag": null,
   "steps": [
     {
@@ -30,8 +30,8 @@
       ],
       "layman_note": {
         "what": "Built the project skeleton: folders, README, walkthrough, tests, CI, and a frozen 21-step plan.",
-        "why": "Every later step builds on a tested, scope-locked base \u00e2\u20ac\u201d no drift possible.",
-        "concept": "Scaffold \u00e2\u20ac\u201d the empty-but-working skeleton built before any real logic, so the project stays green from day one.",
+        "why": "Every later step builds on a tested, scope-locked base â€” no drift possible.",
+        "concept": "Scaffold â€” the empty-but-working skeleton built before any real logic, so the project stays green from day one.",
         "next": "Download the NAB dataset and document what is inside those 58 data streams."
       }
     },
@@ -53,7 +53,7 @@
       "layman_note": {
         "what": "Downloaded the full NAB dataset (58 CSV streams across 7 categories, plus ground-truth anomaly labels) via a reusable download script.",
         "why": "The benchmark data is the raw material for everything that follows.",
-        "concept": "Data ingestion \u00e2\u20ac\u201d writing a script that fetches, organises, and validates a dataset so the pipeline starts from a clean, verified base.",
+        "concept": "Data ingestion â€” writing a script that fetches, organises, and validates a dataset so the pipeline starts from a clean, verified base.",
         "next": "Implement the NAB scoring protocol so we can actually measure how good (or bad) our detectors are."
       }
     },
@@ -71,9 +71,9 @@
       ],
       "layman_note": {
         "what": "Implemented the NAB scoring protocol with 3 application profiles (standard, reward-low-FP, reward-low-FN) and 29 unit tests.",
-        "why": "The scorer is the ruler that measures every detector we build \u00e2\u20ac\u201d without it, there is no way to compare our results to the published NAB leaderboard.",
-        "concept": "NAB scoring \u00e2\u20ac\u201d a scaled sigmoid rewards early detection within an anomaly window and penalises false alarms; scores are normalised so a null detector = 0 and a perfect detector = 100.",
-        "next": "Implement a null detector and verify it scores exactly 0 on the real NAB data \u00e2\u20ac\u201d validating the scoring pipeline end-to-end."
+        "why": "The scorer is the ruler that measures every detector we build â€” without it, there is no way to compare our results to the published NAB leaderboard.",
+        "concept": "NAB scoring â€” a scaled sigmoid rewards early detection within an anomaly window and penalises false alarms; scores are normalised so a null detector = 0 and a perfect detector = 100.",
+        "next": "Implement a null detector and verify it scores exactly 0 on the real NAB data â€” validating the scoring pipeline end-to-end."
       }
     },
     {
@@ -93,9 +93,9 @@
         ".project-meta/decisions.log"
       ],
       "layman_note": {
-        "what": "Built a null detector (always says 'no anomaly'), a data loader for all 58 NAB streams, and a scoring runner. Null detector scores exactly 0.0 on all 3 profiles \u00e2\u20ac\u201d validating the full pipeline end-to-end.",
-        "why": "The null baseline proves the scoring pipeline works correctly before we plug in real detectors. Score 0.0 is the mathematical expectation \u00e2\u20ac\u201d any other number would mean the scorer is broken.",
-        "concept": "Baseline \u00e2\u20ac\u201d a deliberately simple detector whose expected score is known in advance; if the measured score matches, the pipeline is trustworthy.",
+        "what": "Built a null detector (always says 'no anomaly'), a data loader for all 58 NAB streams, and a scoring runner. Null detector scores exactly 0.0 on all 3 profiles â€” validating the full pipeline end-to-end.",
+        "why": "The null baseline proves the scoring pipeline works correctly before we plug in real detectors. Score 0.0 is the mathematical expectation â€” any other number would mean the scorer is broken.",
+        "concept": "Baseline â€” a deliberately simple detector whose expected score is known in advance; if the measured score matches, the pipeline is trustworthy.",
         "next": "Reproduce at least 1 published NAB baseline score and validate against published numbers."
       }
     },
@@ -137,10 +137,29 @@
       ],
       "layman_note": {
         "what": "Implemented EWMA (Exponentially Weighted Moving Average) detector with streaming interface, warmup phase, and O(1) memory. 13 new tests, 92/92 green.",
-        "why": "EWMA is the first statistical detector for the benchmark comparison. Unlike the windowed Gaussian, it uses no buffer — just a smoothed average that weights recent values more heavily. This starts Phase 12 (statistical detectors).",
+        "why": "EWMA is the first statistical detector for the benchmark comparison. Unlike the windowed Gaussian, it uses no buffer â€” just a smoothed average that weights recent values more heavily. This starts Phase 12 (statistical detectors).",
         "concept": "EWMA: each new value updates a running average via alpha * new + (1-alpha) * old. Anomaly score = how far the current value is from the prediction, measured by a tail-probability function. O(1) memory, single tuning knob (alpha).",
         "next": "Implement Z-score detector with streaming interface (step-006)."
       }
+    },
+    {
+      "done_on": "2026-08-21",
+      "id": "step-006",
+      "files_touched": [
+        "src/detectors.py",
+        "tests/test_detectors.py",
+        ".project-meta/ledger.json"
+      ],
+      "title": "Z-score detector with streaming interface",
+      "layman_note": {
+        "what": "Implemented Z-score detector: a rolling window of 128 recent values, scoring each new point by how many standard deviations it sits from the window mean. 13 new tests, all green.",
+        "why": "Z-score is the second statistical detector for Phase 12. Its smaller window (128 vs 6400) reacts faster to local shifts than the Windowed Gaussian, giving us a contrasting detection profile for the final comparison.",
+        "concept": "Z-score: z = (value - mean) / std. A point 3 std above the mean is very unusual. The detector slides a fixed window (deque), so once old data falls out, the detector fully adapts to the new level -- unlike EWMA which decays gradually.",
+        "next": "Implement a simple threshold detector (step-007), then score all statistical detectors on the full NAB corpus."
+      },
+      "commit_sha": "1e168cf",
+      "status": "done",
+      "tests_green": true
     }
   ]
 }
