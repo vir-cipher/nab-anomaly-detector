@@ -4,7 +4,7 @@
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
   "step_pointer": 7,
-  "last_green_tag": null,
+  "last_green_tag": "green-nab-anomaly-detector-1",
   "steps": [
     {
       "id": "step-000",
@@ -80,8 +80,7 @@
       "id": "step-003",
       "status": "done",
       "done_on": "2026-08-13",
-      "commit_sha": null,
-      "commit_sha_note": "SHA derived from git log post-push (commit includes this file)",
+      "commit_sha": "1856502",
       "tests_green": true,
       "files_touched": [
         "src/detectors.py",
@@ -103,8 +102,7 @@
       "id": "step-004",
       "status": "done",
       "done_on": "2026-08-17",
-      "commit_sha": null,
-      "commit_sha_note": "SHA from git log post-push",
+      "commit_sha": "44c73fc",
       "tests_green": true,
       "files_touched": [
         "src/detectors.py",
@@ -126,8 +124,7 @@
       "id": "step-005",
       "status": "done",
       "done_on": "2026-08-19",
-      "commit_sha": null,
-      "commit_sha_note": "SHA from git log post-push",
+      "commit_sha": "11acfc4",
       "tests_green": true,
       "files_touched": [
         "src/detectors.py",
@@ -157,7 +154,7 @@
         "concept": "Z-score: z = (value - mean) / std. A point 3 std above the mean is very unusual. The detector slides a fixed window (deque), so once old data falls out, the detector fully adapts to the new level -- unlike EWMA which decays gradually.",
         "next": "Implement a simple threshold detector (step-007), then score all statistical detectors on the full NAB corpus."
       },
-      "commit_sha": "1e168cf",
+      "commit_sha": "aaa28d6",
       "status": "done",
       "tests_green": true
     }

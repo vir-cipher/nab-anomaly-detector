@@ -21,3 +21,9 @@
 - **Alpha default 0.1:** standard EWMA smoothing factor. Lower = smoother (slow to react), higher = noisier (fast to react). Will be tuned when we benchmark on NAB in step-008.
 - **Same tail-probability scoring as Gaussian:** reuses `_normal_tail_probability` for consistency. Score = 1 - Q(value, ewma, sqrt(ewma_var)), same interpretation as WindowedGaussianDetector.
 - **O(1) memory:** no window buffer. State = 4 floats (ewma, ewma_var, count, alpha). Constant memory regardless of stream length.
+
+2026-08-22 — audit reconciliation (6 findings, 22-Aug-2026)
+  F1 CRITICAL: step-006 commit_sha patched 1e168cf → aaa28d6 (git log confirms aaa28d6).
+  F2 MODERATE: backfilled null commit_sha — step-003→1856502, step-004→44c73fc, step-005→11acfc4 (all from git log --oneline).
+  F5 LOW: last_green_tag set to green-nab-anomaly-detector-1 (tag exists on GitHub at aaa28d6).
+  Rule 0 reconciliation: ledger disagrees with code → code wins → ledger patched.
