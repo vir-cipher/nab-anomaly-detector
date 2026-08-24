@@ -164,7 +164,7 @@
       "title": "Implement simple threshold detector",
       "status": "done",
       "done_on": "2026-08-24",
-      "commit_sha": "166787d",
+      "commit_sha": "cf1c76b",
       "files_touched": [
         "src/detectors.py",
         "tests/test_detectors.py",
