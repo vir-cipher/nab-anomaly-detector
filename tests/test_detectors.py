@@ -13,7 +13,7 @@ import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.detectors import NullDetector, WindowedGaussianDetector, EWMADetector, ZScoreDetector, Detector
+from src.detectors import NullDetector, WindowedGaussianDetector, EWMADetector, ZScoreDetector, ThresholdDetector, Detector
 from src.data_loader import load_stream, load_all_streams
 from src.scoring import load_windows, score_corpus, sweep_optimize
 
@@ -562,4 +562,157 @@ class TestZScoreOnSampleData:
                       for t, v in zip(ts, vals)]
             assert all(0.0 <= s <= 1.0 for s in scores), (
                 f"score out of range on {key}")
+            assert len(scores) == len(ts)
+
+
+# -------------------------------------------------------------------
+# Simple threshold detector unit tests (step-007)
+# Gate: Threshold detector passes unit tests.
+# -------------------------------------------------------------------
+
+class TestThresholdDetectorUnit:
+    """Unit tests for ThresholdDetector."""
+
+    def test_implements_detector(self):
+        assert issubclass(ThresholdDetector, Detector)
+
+    def test_name(self):
+        assert ThresholdDetector().name == "ThresholdDetector"
+
+    def test_default_params(self):
+        det = ThresholdDetector()
+        assert det.warmup == 100
+        assert det.n_std == 3.0
+
+    def test_custom_params(self):
+        det = ThresholdDetector(warmup=20, n_std=2.0)
+        assert det.warmup == 20
+        assert det.n_std == 2.0
+
+    def test_warmup_minimum_two(self):
+        """Warmup is clamped to >= 2 (need 2 points for std)."""
+        det = ThresholdDetector(warmup=1)
+        assert det.warmup == 2
+
+    def test_returns_zero_during_warmup(self):
+        """All points during warmup must return 0.0."""
+        det = ThresholdDetector(warmup=20)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(20):
+            score = det.handle_record(
+                base + timedelta(minutes=i), 10.0)
+            assert score == 0.0, f"warmup point {i} scored {score}"
+
+    def test_band_frozen_after_warmup(self):
+        """low/high are set once warmup completes and never move."""
+        det = ThresholdDetector(warmup=20, n_std=3.0)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(20):
+            det.handle_record(base + timedelta(minutes=i), 10.0)
+        assert det.low is not None and det.high is not None
+        low_after_warmup, high_after_warmup = det.low, det.high
+        # Feed 100 more stable points -- band must not change.
+        for i in range(100):
+            det.handle_record(base + timedelta(minutes=20 + i), 10.0)
+        assert det.low == low_after_warmup
+        assert det.high == high_after_warmup
+
+    def test_score_is_binary(self):
+        """Scores after warmup are exactly 0.0 or 1.0, never in between."""
+        det = ThresholdDetector(warmup=20, n_std=3.0)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(20):
+            det.handle_record(base + timedelta(minutes=i), 10.0)
+        for i, val in enumerate([10.0, 10.5, 9.5, 500.0, -500.0]):
+            score = det.handle_record(
+                base + timedelta(minutes=20 + i), val)
+            assert score in (0.0, 1.0), f"non-binary score {score}"
+
+    def test_value_within_band_scores_zero(self):
+        det = ThresholdDetector(warmup=20, n_std=3.0)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(20):
+            det.handle_record(base + timedelta(minutes=i), 10.0)
+        score = det.handle_record(base + timedelta(minutes=20), 10.0)
+        assert score == 0.0
+
+    def test_value_outside_band_scores_one(self):
+        det = ThresholdDetector(warmup=20, n_std=3.0)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(20):
+            det.handle_record(base + timedelta(minutes=i), 10.0)
+        score = det.handle_record(base + timedelta(minutes=20), 10000.0)
+        assert score == 1.0
+
+    def test_reset_clears_state(self):
+        """After reset, detector behaves like a fresh instance."""
+        det = ThresholdDetector(warmup=5)
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        for i in range(20):
+            det.handle_record(base + timedelta(minutes=i), float(i))
+        det.reset()
+        assert det.low is None
+        assert det.high is None
+        assert det.handle_record(base, 999.0) == 0.0
+
+    def test_never_adapts_unlike_zscore(self):
+        """ThresholdDetector keeps flagging a sustained level shift
+        that ZScoreDetector (rolling window) eventually adapts to."""
+        from datetime import timedelta
+        base = datetime(2024, 1, 1)
+        thr = ThresholdDetector(warmup=50, n_std=3.0)
+        z = ZScoreDetector(window_size=50, warmup=50)
+        for i in range(50):
+            thr.handle_record(base + timedelta(minutes=i), 10.0)
+            z.handle_record(base + timedelta(minutes=i), 10.0)
+        # Sustained jump to a new level, long enough for Z-score's
+        # 50-point window to fully slide past the old level.
+        thr_scores, z_scores = [], []
+        for i in range(80):
+            t = base + timedelta(minutes=50 + i)
+            thr_scores.append(thr.handle_record(t, 100.0))
+            z_scores.append(z.handle_record(t, 100.0))
+        assert all(s == 1.0 for s in thr_scores), (
+            "threshold detector must keep flagging the shifted level "
+            "forever -- its band was frozen during warmup")
+        assert z_scores[-1] < z_scores[0], (
+            "z-score detector's rolling window should adapt, driving "
+            "its score down as the new level fills the window")
+
+
+# -------------------------------------------------------------------
+# Threshold detector on sample NAB data (step-007 gate support:
+# produces valid scores on real data)
+# -------------------------------------------------------------------
+
+class TestThresholdOnSampleData:
+    """Run ThresholdDetector on real NAB streams and verify it scores."""
+
+    def test_scores_on_nyc_taxi(self):
+        """Threshold detector produces valid binary scores on a real
+        stream."""
+        streams = load_all_streams()
+        ts, vals = streams["realKnownCause/nyc_taxi.csv"]
+        det = ThresholdDetector()
+        scores = [det.handle_record(t, v) for t, v in zip(ts, vals)]
+        assert all(s in (0.0, 1.0) for s in scores)
+        assert all(s == 0.0 for s in scores[:det.warmup])
+
+    def test_scores_on_multiple_streams(self):
+        """Threshold detector produces valid scores on >=5 streams."""
+        streams = load_all_streams()
+        keys = list(streams.keys())[:5]
+        for key in keys:
+            ts, vals = streams[key]
+            det = ThresholdDetector()
+            scores = [det.handle_record(t, v)
+                      for t, v in zip(ts, vals)]
+            assert all(s in (0.0, 1.0) for s in scores), (
+                f"non-binary score on {key}")
             assert len(scores) == len(ts)

@@ -6,7 +6,7 @@ in [0.0, 1.0].  This mirrors how real-time detectors work â€”
 you cannot peek ahead.
 
 Usage:
-    from src.detectors import NullDetector, WindowedGaussianDetector, EWMADetector, ZScoreDetector
+    from src.detectors import NullDetector, WindowedGaussianDetector, EWMADetector, ZScoreDetector, ThresholdDetector
     det = WindowedGaussianDetector()
     score = det.handle_record(timestamp, value)
 """
@@ -312,3 +312,75 @@ class ZScoreDetector(Detector):
         self._window.clear()
         self._sum = 0.0
         self._sum_sq = 0.0
+
+
+# ---------------------------------------------------------------------------
+# Simple threshold detector -- step-007
+# The simplest possible streaming detector: learn a fixed [low, high]
+# band during warmup and never adapt again. Binary score (0.0 or 1.0),
+# unlike the continuous tail-probability scores of the other three
+# detectors -- this is the "dumb baseline" contrast for step-008.
+# ---------------------------------------------------------------------------
+
+
+class ThresholdDetector(Detector):
+    """Static threshold anomaly detector.
+
+    Learns a fixed mean/std during a warmup window, derives a
+    static [low, high] band (mean +/- n_std * std), and never
+    updates it again -- unlike WindowedGaussianDetector (recomputes
+    every step_size points), EWMADetector (decays continuously),
+    or ZScoreDetector (rolling window). This "set it and forget
+    it" behaviour is the classic simplest streaming detector and
+    gives a binary anomaly signal (0.0 / 1.0) rather than a
+    graduated probability -- a useful contrast baseline for the
+    Phase-12 comparison in step-008.
+
+    Parameters:
+        warmup: Number of initial points used to compute the
+                static mean/std. Default 100.
+        n_std:  Number of standard deviations from the mean that
+                defines the [low, high] band. Default 3.0.
+    """
+
+    def __init__(self, warmup=100, n_std=3.0):
+        self.warmup = max(warmup, 2)
+        self.n_std = n_std
+        self._warmup_values = []
+        self._count = 0
+        self.low = None
+        self.high = None
+
+    def handle_record(self, timestamp, value):
+        """Process one data point and return a binary anomaly score.
+
+        During warmup, collects values and returns 0.0. On the
+        point that completes warmup, computes the static
+        [low, high] band from the warmup sample. After warmup,
+        returns 1.0 if the value falls outside the frozen band,
+        else 0.0. The band itself is never updated again.
+        """
+        self._count += 1
+
+        if self.low is None:
+            self._warmup_values.append(value)
+            if self._count >= self.warmup:
+                n = len(self._warmup_values)
+                mean = sum(self._warmup_values) / n
+                variance = (
+                    sum((v - mean) ** 2 for v in self._warmup_values) / n
+                )
+                std = math.sqrt(variance) if variance > 0 else 1e-6
+                self.low = mean - self.n_std * std
+                self.high = mean + self.n_std * std
+                self._warmup_values = []  # free memory
+            return 0.0
+
+        return 1.0 if (value < self.low or value > self.high) else 0.0
+
+    def reset(self):
+        """Reset internal state for a new stream."""
+        self._warmup_values = []
+        self._count = 0
+        self.low = None
+        self.high = None

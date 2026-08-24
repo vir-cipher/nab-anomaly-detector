@@ -3,7 +3,7 @@
   "project": "nab-anomaly-detector",
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
-  "step_pointer": 7,
+  "step_pointer": 8,
   "last_green_tag": "green-nab-anomaly-detector-1",
   "steps": [
     {
@@ -157,6 +157,27 @@
       "commit_sha": "aaa28d6",
       "status": "done",
       "tests_green": true
+    },
+    {
+      "id": "step-007",
+      "phase": 12,
+      "title": "Implement simple threshold detector",
+      "status": "done",
+      "done_on": "2026-08-24",
+      "commit_sha": "166787d",
+      "files_touched": [
+        "src/detectors.py",
+        "tests/test_detectors.py",
+        ".project-meta/ledger.json",
+        ".project-meta/decisions.log"
+      ],
+      "tests_green": true,
+      "layman_note": {
+        "what": "Implemented ThresholdDetector: learns a static [low, high] band (mean +/- 3 std) during a 100-point warmup, then freezes it forever. Returns a binary score (0.0 or 1.0), unlike the other three detectors' continuous probability scores. 14 new tests, 111/111 total green.",
+        "why": "This is the classic 'dumb baseline' streaming detector -- set thresholds once, never adapt. It completes the 4-detector lineup for Phase 12 (Gaussian, EWMA, Z-score, Threshold) needed for the step-008 comparison.",
+        "concept": "Static threshold: unlike Z-score's rolling window or EWMA's decay, once the warmup band is set it never moves. A test proves this directly -- after a sustained level shift, ThresholdDetector keeps flagging every point while ZScoreDetector's score drops as its window adapts.",
+        "next": "Step-008: score all 4 statistical detectors (Gaussian, EWMA, Z-score, Threshold) on the full NAB corpus and tabulate results."
+      }
     }
   ]
 }

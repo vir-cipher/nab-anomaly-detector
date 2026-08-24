@@ -27,3 +27,9 @@
   F2 MODERATE: backfilled null commit_sha — step-003→1856502, step-004→44c73fc, step-005→11acfc4 (all from git log --oneline).
   F5 LOW: last_green_tag set to green-nab-anomaly-detector-1 (tag exists on GitHub at aaa28d6).
   Rule 0 reconciliation: ledger disagrees with code → code wins → ledger patched.
+
+2026-08-24 - step-007: Simple threshold detector design decisions
+- Warmup=100, n_std=3.0 defaults: longer warmup than EWMA/Z-score (10/30) because the band is frozen forever after warmup -- a bigger sample gives a more reliable one-shot mean/std estimate.
+- Binary score (0.0/1.0), not tail-probability: this is the deliberate "dumb baseline" contrast against the other 3 detectors' continuous [0,1] scores, per the plan's "simple threshold detector" framing.
+- Never re-estimates the band after warmup (unlike WindowedGaussian's step-buffer recompute, EWMA's continuous decay, or Z-score's rolling window) -- this is the defining trait, proven directly by test_never_adapts_unlike_zscore.
+- 14 new tests (111/111 total green). No new dependencies.
