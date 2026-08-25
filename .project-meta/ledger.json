@@ -185,7 +185,7 @@
       "title": "Score all statistical detectors on NAB and tabulate results",
       "status": "done",
       "done_on": "2026-08-25",
-      "commit_sha": null,
+      "commit_sha": "0d0632a",
       "files_touched": [
         "src/run_all_detectors.py",
         "tests/test_run_all.py",
