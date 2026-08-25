@@ -33,3 +33,4 @@
 - Binary score (0.0/1.0), not tail-probability: this is the deliberate "dumb baseline" contrast against the other 3 detectors' continuous [0,1] scores, per the plan's "simple threshold detector" framing.
 - Never re-estimates the band after warmup (unlike WindowedGaussian's step-buffer recompute, EWMA's continuous decay, or Z-score's rolling window) -- this is the defining trait, proven directly by test_never_adapts_unlike_zscore.
 - 14 new tests (111/111 total green). No new dependencies.
+2026-08-25 step-008: Per-profile threshold sweep tabulation for all 4 statistical detectors. Finding: ThresholdDetector optimizes to 'never fire' (NAB 0.0, threshold above max score) on every profile -- static frozen bands generate FP storms after level shifts, so the sweep prefers silence. EWMA/Z-score also collapse to 0.0 on reward_low_fp. Gaussian leaderboard top at 40.13 standard, exactly reproducing step-004 result (regression cross-check).

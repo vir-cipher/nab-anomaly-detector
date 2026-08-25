@@ -1,0 +1,13 @@
+detector,profile,nab_score,raw_score,threshold,num_streams,total_windows
+gaussian,standard,40.1349,-22.8871,1.0,58,116
+zscore,standard,23.4315,-61.6389,1.0,58,116
+ewma,standard,20.641,-68.1129,1.0,58,116
+threshold,standard,0.0,-116.0,1.1,58,116
+gaussian,reward_low_fp,23.9439,-60.4502,1.0,58,116
+ewma,reward_low_fp,0.0,-116.0,1.1,58,116
+zscore,reward_low_fp,0.0,-116.0,1.1,58,116
+threshold,reward_low_fp,0.0,-116.0,1.1,58,116
+gaussian,reward_low_fn,47.7336,-65.8871,1.0,58,116
+zscore,reward_low_fn,36.598,-104.6389,1.0,58,116
+ewma,reward_low_fn,36.4618,-105.1129,1.0,58,116
+threshold,reward_low_fn,0.0,-232.0,1.1,58,116

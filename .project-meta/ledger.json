@@ -3,7 +3,7 @@
   "project": "nab-anomaly-detector",
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
-  "step_pointer": 8,
+  "step_pointer": 9,
   "last_green_tag": "green-nab-anomaly-detector-1",
   "steps": [
     {
@@ -177,6 +177,29 @@
         "why": "This is the classic 'dumb baseline' streaming detector -- set thresholds once, never adapt. It completes the 4-detector lineup for Phase 12 (Gaussian, EWMA, Z-score, Threshold) needed for the step-008 comparison.",
         "concept": "Static threshold: unlike Z-score's rolling window or EWMA's decay, once the warmup band is set it never moves. A test proves this directly -- after a sustained level shift, ThresholdDetector keeps flagging every point while ZScoreDetector's score drops as its window adapts.",
         "next": "Step-008: score all 4 statistical detectors (Gaussian, EWMA, Z-score, Threshold) on the full NAB corpus and tabulate results."
+      }
+    },
+    {
+      "id": "step-008",
+      "phase": 12,
+      "title": "Score all statistical detectors on NAB and tabulate results",
+      "status": "done",
+      "done_on": "2026-08-25",
+      "commit_sha": null,
+      "files_touched": [
+        "src/run_all_detectors.py",
+        "tests/test_run_all.py",
+        "results/statistical_detectors.csv",
+        "results/statistical_detectors.json",
+        ".project-meta/ledger.json",
+        ".project-meta/decisions.log"
+      ],
+      "tests_green": true,
+      "layman_note": {
+        "what": "Scored all 4 statistical detectors (Windowed Gaussian, EWMA, Z-score, Threshold) on the full 58-stream NAB corpus with per-profile threshold sweeps. Consolidated leaderboard written to results/statistical_detectors.csv: Gaussian 40.13, Z-score 23.43, EWMA 20.64, Threshold 0.00 (standard profile). 11 new tests, 132/132 green.",
+        "why": "This is the Phase-12 exit gate: the tabulated leaderboard is the baseline the Phase-13 isolation forest and the final hybrid must beat. It also independently reproduced the step-004 Gaussian score (40.1349) to 4 decimals -- a free regression check.",
+        "concept": "Threshold sweep: NAB does not fix a detection cut-off; you pick the score threshold that maximizes each profile's reward. The static ThresholdDetector swept to 'never fire' (NAB 0.0 = same as the null detector) -- its false-positive cost outweighs every true detection, a textbook demonstration of why adaptive baselines matter on streaming data.",
+        "next": "Phase 13: implement the isolation-forest detector with a streaming adapter (step-009)."
       }
     }
   ]
