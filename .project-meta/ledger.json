@@ -3,7 +3,7 @@
   "project": "nab-anomaly-detector",
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
-  "step_pointer": 9,
+  "step_pointer": 10,
   "last_green_tag": "green-nab-anomaly-detector-1",
   "steps": [
     {
@@ -30,8 +30,8 @@
       ],
       "layman_note": {
         "what": "Built the project skeleton: folders, README, walkthrough, tests, CI, and a frozen 21-step plan.",
-        "why": "Every later step builds on a tested, scope-locked base â€” no drift possible.",
-        "concept": "Scaffold â€” the empty-but-working skeleton built before any real logic, so the project stays green from day one.",
+        "why": "Every later step builds on a tested, scope-locked base \u00e2\u20ac\u201d no drift possible.",
+        "concept": "Scaffold \u00e2\u20ac\u201d the empty-but-working skeleton built before any real logic, so the project stays green from day one.",
         "next": "Download the NAB dataset and document what is inside those 58 data streams."
       }
     },
@@ -53,7 +53,7 @@
       "layman_note": {
         "what": "Downloaded the full NAB dataset (58 CSV streams across 7 categories, plus ground-truth anomaly labels) via a reusable download script.",
         "why": "The benchmark data is the raw material for everything that follows.",
-        "concept": "Data ingestion â€” writing a script that fetches, organises, and validates a dataset so the pipeline starts from a clean, verified base.",
+        "concept": "Data ingestion \u00e2\u20ac\u201d writing a script that fetches, organises, and validates a dataset so the pipeline starts from a clean, verified base.",
         "next": "Implement the NAB scoring protocol so we can actually measure how good (or bad) our detectors are."
       }
     },
@@ -71,9 +71,9 @@
       ],
       "layman_note": {
         "what": "Implemented the NAB scoring protocol with 3 application profiles (standard, reward-low-FP, reward-low-FN) and 29 unit tests.",
-        "why": "The scorer is the ruler that measures every detector we build â€” without it, there is no way to compare our results to the published NAB leaderboard.",
-        "concept": "NAB scoring â€” a scaled sigmoid rewards early detection within an anomaly window and penalises false alarms; scores are normalised so a null detector = 0 and a perfect detector = 100.",
-        "next": "Implement a null detector and verify it scores exactly 0 on the real NAB data â€” validating the scoring pipeline end-to-end."
+        "why": "The scorer is the ruler that measures every detector we build \u00e2\u20ac\u201d without it, there is no way to compare our results to the published NAB leaderboard.",
+        "concept": "NAB scoring \u00e2\u20ac\u201d a scaled sigmoid rewards early detection within an anomaly window and penalises false alarms; scores are normalised so a null detector = 0 and a perfect detector = 100.",
+        "next": "Implement a null detector and verify it scores exactly 0 on the real NAB data \u00e2\u20ac\u201d validating the scoring pipeline end-to-end."
       }
     },
     {
@@ -92,9 +92,9 @@
         ".project-meta/decisions.log"
       ],
       "layman_note": {
-        "what": "Built a null detector (always says 'no anomaly'), a data loader for all 58 NAB streams, and a scoring runner. Null detector scores exactly 0.0 on all 3 profiles â€” validating the full pipeline end-to-end.",
-        "why": "The null baseline proves the scoring pipeline works correctly before we plug in real detectors. Score 0.0 is the mathematical expectation â€” any other number would mean the scorer is broken.",
-        "concept": "Baseline â€” a deliberately simple detector whose expected score is known in advance; if the measured score matches, the pipeline is trustworthy.",
+        "what": "Built a null detector (always says 'no anomaly'), a data loader for all 58 NAB streams, and a scoring runner. Null detector scores exactly 0.0 on all 3 profiles \u00e2\u20ac\u201d validating the full pipeline end-to-end.",
+        "why": "The null baseline proves the scoring pipeline works correctly before we plug in real detectors. Score 0.0 is the mathematical expectation \u00e2\u20ac\u201d any other number would mean the scorer is broken.",
+        "concept": "Baseline \u00e2\u20ac\u201d a deliberately simple detector whose expected score is known in advance; if the measured score matches, the pipeline is trustworthy.",
         "next": "Reproduce at least 1 published NAB baseline score and validate against published numbers."
       }
     },
@@ -134,7 +134,7 @@
       ],
       "layman_note": {
         "what": "Implemented EWMA (Exponentially Weighted Moving Average) detector with streaming interface, warmup phase, and O(1) memory. 13 new tests, 92/92 green.",
-        "why": "EWMA is the first statistical detector for the benchmark comparison. Unlike the windowed Gaussian, it uses no buffer â€” just a smoothed average that weights recent values more heavily. This starts Phase 12 (statistical detectors).",
+        "why": "EWMA is the first statistical detector for the benchmark comparison. Unlike the windowed Gaussian, it uses no buffer \u00e2\u20ac\u201d just a smoothed average that weights recent values more heavily. This starts Phase 12 (statistical detectors).",
         "concept": "EWMA: each new value updates a running average via alpha * new + (1-alpha) * old. Anomaly score = how far the current value is from the prediction, measured by a tail-probability function. O(1) memory, single tuning knob (alpha).",
         "next": "Implement Z-score detector with streaming interface (step-006)."
       }
@@ -200,6 +200,27 @@
         "why": "This is the Phase-12 exit gate: the tabulated leaderboard is the baseline the Phase-13 isolation forest and the final hybrid must beat. It also independently reproduced the step-004 Gaussian score (40.1349) to 4 decimals -- a free regression check.",
         "concept": "Threshold sweep: NAB does not fix a detection cut-off; you pick the score threshold that maximizes each profile's reward. The static ThresholdDetector swept to 'never fire' (NAB 0.0 = same as the null detector) -- its false-positive cost outweighs every true detection, a textbook demonstration of why adaptive baselines matter on streaming data.",
         "next": "Phase 13: implement the isolation-forest detector with a streaming adapter (step-009)."
+      }
+    },
+    {
+      "id": "step-009",
+      "phase": 13,
+      "title": "Implement isolation forest detector with streaming adapter",
+      "status": "done",
+      "done_on": "2026-08-27",
+      "commit_sha": null,
+      "files_touched": [
+        "src/iforest.py",
+        "tests/test_iforest.py",
+        ".project-meta/ledger.json",
+        ".project-meta/decisions.log"
+      ],
+      "tests_green": true,
+      "layman_note": {
+        "what": "Implemented a pure-Python isolation forest (Liu et al. 2008) in new module src/iforest.py, plus a streaming adapter: each point becomes a 4-value shingle, the forest first trains on 256 shingles, then retrains every 256 points on the most recent 256. 26 new tests, 158/158 green.",
+        "why": "Phase 13 begins: this is the ML detector that must challenge the statistical leaderboard (Gaussian 40.13). Unlike the statistical detectors, which model what normal looks like, isolation forest directly hunts for points that are easy to separate from the crowd.",
+        "concept": "Isolation: anomalies are few and different, so random splits isolate them near the top of a random tree. Score = 2^(-avg_depth / c(psi)) -- roughly 0.5 for average points, near 1.0 for anomalies isolated in short paths.",
+        "next": "step-010: score the isolation forest on the full NAB corpus and add it to the comparison table against the 4 statistical detectors."
       }
     }
   ]
