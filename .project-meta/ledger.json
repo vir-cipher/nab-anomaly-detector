@@ -208,7 +208,7 @@
       "title": "Implement isolation forest detector with streaming adapter",
       "status": "done",
       "done_on": "2026-08-27",
-      "commit_sha": null,
+      "commit_sha": "60889b5",
       "files_touched": [
         "src/iforest.py",
         "tests/test_iforest.py",
