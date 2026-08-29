@@ -229,7 +229,7 @@
       "title": "Score isolation forest on NAB and compare to statistical detectors",
       "status": "done",
       "done_on": "2026-08-29",
-      "commit_sha": null,
+      "commit_sha": "1efbab8",
       "files_touched": [
         "src/score_iforest.py",
         "tests/test_score_iforest.py",
