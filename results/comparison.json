@@ -1,0 +1,146 @@
+{
+  "detectors": [
+    "ewma",
+    "gaussian",
+    "iforest",
+    "threshold",
+    "zscore"
+  ],
+  "rows": [
+    {
+      "detector": "gaussian",
+      "profile": "standard",
+      "nab_score": 40.1349,
+      "raw_score": -22.8871,
+      "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "zscore",
+      "profile": "standard",
+      "nab_score": 23.4315,
+      "raw_score": -61.6389,
+      "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "ewma",
+      "profile": "standard",
+      "nab_score": 20.641,
+      "raw_score": -68.1129,
+      "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "iforest",
+      "profile": "standard",
+      "nab_score": 5.2476,
+      "raw_score": -103.8255,
+      "threshold": 0.8540914844,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "threshold",
+      "profile": "standard",
+      "nab_score": 0.0,
+      "raw_score": -116.0,
+      "threshold": 1.1,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "gaussian",
+      "profile": "reward_low_fp",
+      "nab_score": 23.9439,
+      "raw_score": -60.4502,
+      "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "iforest",
+      "profile": "reward_low_fp",
+      "nab_score": 4.241,
+      "raw_score": -106.1608,
+      "threshold": 0.8614324108,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "ewma",
+      "profile": "reward_low_fp",
+      "nab_score": 0.0,
+      "raw_score": -116.0,
+      "threshold": 1.1,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "zscore",
+      "profile": "reward_low_fp",
+      "nab_score": 0.0,
+      "raw_score": -116.0,
+      "threshold": 1.1,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "threshold",
+      "profile": "reward_low_fp",
+      "nab_score": 0.0,
+      "raw_score": -116.0,
+      "threshold": 1.1,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "gaussian",
+      "profile": "reward_low_fn",
+      "nab_score": 47.7336,
+      "raw_score": -65.8871,
+      "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "zscore",
+      "profile": "reward_low_fn",
+      "nab_score": 36.598,
+      "raw_score": -104.6389,
+      "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "ewma",
+      "profile": "reward_low_fn",
+      "nab_score": 36.4618,
+      "raw_score": -105.1129,
+      "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "iforest",
+      "profile": "reward_low_fn",
+      "nab_score": 6.0846,
+      "raw_score": -210.8255,
+      "threshold": 0.8540914844,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "threshold",
+      "profile": "reward_low_fn",
+      "nab_score": 0.0,
+      "raw_score": -232.0,
+      "threshold": 1.1,
+      "num_streams": 58,
+      "total_windows": 116
+    }
+  ]
+}

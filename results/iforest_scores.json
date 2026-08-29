@@ -1,0 +1,32 @@
+{
+  "detector": "iforest",
+  "rows": [
+    {
+      "detector": "iforest",
+      "profile": "standard",
+      "nab_score": 5.2476,
+      "raw_score": -103.8255,
+      "threshold": 0.8540914844,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "iforest",
+      "profile": "reward_low_fp",
+      "nab_score": 4.241,
+      "raw_score": -106.1608,
+      "threshold": 0.8614324108,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "iforest",
+      "profile": "reward_low_fn",
+      "nab_score": 6.0846,
+      "raw_score": -210.8255,
+      "threshold": 0.8540914844,
+      "num_streams": 58,
+      "total_windows": 116
+    }
+  ]
+}
