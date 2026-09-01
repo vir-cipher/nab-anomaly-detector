@@ -3,7 +3,7 @@
   "project": "nab-anomaly-detector",
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
-  "step_pointer": 11,
+  "step_pointer": 12,
   "last_green_tag": "green-nab-anomaly-detector-1",
   "steps": [
     {
@@ -245,6 +245,31 @@
         "why": "Phase-13 core question -- does the ML detector beat the statistical baselines? On the standard profile it does NOT (5.25 vs Gaussian 40.13), but it clears the null/threshold floor of 0.00, and under reward_low_fp it holds 4.24 while EWMA and Z-score both collapse to 0.00 -- ranking 2nd behind Gaussian on that profile.",
         "concept": "Same-ruler comparison -- scoring every detector through the identical sweep machinery makes the numbers directly comparable and re-reproduces the step-008 statistical scores exactly (a free regression check). A naive streaming isolation forest underperforming tuned statistical detectors on NAB is a real, documented result, not a bug.",
         "next": "step-011: parameter sensitivity analysis for the isolation forest (>=3 configs) to see whether tuning closes the gap before the Phase-14 hybrid."
+      }
+    },
+    {
+      "id": "step-011",
+      "phase": 13,
+      "title": "Parameter sensitivity analysis for isolation forest",
+      "status": "done",
+      "done_on": "2026-09-01",
+      "commit_sha": null,
+      "files_touched": [
+        "src/param_sensitivity.py",
+        "tests/test_param_sensitivity.py",
+        "results/iforest_sensitivity.csv",
+        "results/iforest_sensitivity.json",
+        "docs/WALKTHROUGH.md",
+        ".gitignore",
+        ".project-meta/ledger.json",
+        ".project-meta/decisions.log"
+      ],
+      "tests_green": true,
+      "layman_note": {
+        "what": "OFAT parameter sweep for the isolation forest via new module src/param_sensitivity.py: n_trees (32/64/128) and sample_size (64/128/256), 5 configs x 3 profiles, scored through the same run_all_detectors.score_all machinery. Results in results/iforest_sensitivity.csv + .json. 13 new tests, 182/182 green.",
+        "why": "Phase-13 exit question before the Phase-14 hybrid: does tuning the forest close the ~35-point gap to Windowed Gaussian (40.13)? Answer: no. Tuning moves NAB by only ~1.3 points (standard 4.97-6.23); the forest stays in the 5-6 band.",
+        "concept": "One-factor-at-a-time (OFAT): change one knob at a time so each score delta is attributable to a single parameter. sample_size shows the clearest effect and a real profile trade-off -- 256 is best on standard (6.23) and reward_low_fn (7.90) but worst on reward_low_fp (3.17), because a larger sub-sample makes the forest fire more, which the false-positive-averse profile penalises. Validity: the baseline config reproduced step-010's committed comparison.csv byte-exact (5.2476/4.2410/6.0846).",
+        "next": "step-012: design and implement the hybrid combiner (best statistical detector + isolation forest), Phase 14."
       }
     }
   ]

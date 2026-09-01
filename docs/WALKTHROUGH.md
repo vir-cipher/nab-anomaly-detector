@@ -146,4 +146,43 @@ leaderboard. Scoring on it means our results are directly comparable to Numenta'
 Twitter's AnomalyDetection, Etsy's Skyline, and other published detectors. Without
 NAB, our numbers would be "trust us" — with NAB, they are "verify us."
 
-## 6–9. (Sections added as phases complete.)
+## 6. Parameter sensitivity of the isolation forest (step-011)
+
+Before combining detectors in Phase 14, we asked a simple question: **does tuning
+the isolation forest close the gap to the statistical baselines?** `src/param_sensitivity.py`
+runs a one-factor-at-a-time (OFAT) sweep around the step-009 baseline
+(`n_trees=64`, `sample_size=128`, `shingle_size=4`, `train_size=256`), scoring every
+config through the *same* `run_all_detectors.score_all` machinery used for every
+other detector, so the numbers are directly comparable to `results/comparison.csv`.
+
+Two knobs are swept, all else held at baseline:
+
+- **n_trees** (ensemble size): 32, 64\*, 128
+- **sample_size** (per-tree sub-sample psi): 64, 128\*, 256
+
+(\* = baseline). Results (`results/iforest_sensitivity.csv`), NAB score per profile:
+
+| config          | standard | reward_low_fp | reward_low_fn |
+|-----------------|:--------:|:-------------:|:-------------:|
+| baseline        |   5.25   |     4.24      |     6.08      |
+| n_trees=32      |   5.74   |     3.54      |     7.11      |
+| n_trees=128     |   5.93   |     4.36      |     7.40      |
+| sample_size=64  |   4.97   |     4.16      |     6.06      |
+| sample_size=256 | **6.23** |     3.17      |   **7.90**    |
+
+**What it shows.** Tuning moves the NAB score by only ~1.3 points on the standard
+profile (4.97 to 6.23) — the forest stays in the 5-6 band, still ~35 points under
+Windowed Gaussian's 40.13. **Tuning these knobs does not close the gap.** The clearest
+effect is `sample_size`, and it exposes a real profile trade-off: a larger sub-sample
+(256) is best when detections are rewarded (standard 6.23, reward_low_fn 7.90) but
+*worst* under the false-positive-averse profile (reward_low_fp 3.17), because seeing
+more structure per tree makes the forest fire more, which that profile penalises.
+More trees help marginally (ensembles stabilise well before 100 trees, Liu 2008 Fig.5).
+
+**Validity anchor.** The `baseline` row reproduces step-010's committed
+`comparison.csv` byte-exact (standard 5.2476, reward_low_fp 4.2410, reward_low_fn
+6.0846) — the sweep is scored through the identical pipeline, so the deltas above are
+attributable to the parameters alone. This motivates the Phase-14 hybrid: statistics
+carry the accuracy, the forest contributes where false alarms are expensive.
+
+## 7–9. (Sections added as phases complete.)

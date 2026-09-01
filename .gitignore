@@ -12,4 +12,5 @@ htmlcov/
 .DS_Store
 
 # NAB data (downloaded by src/download_nab.py, not committed)
-data/nab/.project-meta/run.lock 
+data/nab/
+.project-meta/run.lock

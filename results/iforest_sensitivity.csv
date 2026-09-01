@@ -1,0 +1,16 @@
+config,swept_param,swept_value,n_trees,sample_size,shingle_size,train_size,retrain_interval,profile,nab_score,raw_score,threshold,num_streams,total_windows
+baseline,baseline,,64,128,4,256,256,standard,5.2476,-103.8255,0.8540914844,58,116
+n_trees=32,n_trees,32,32,128,4,256,256,standard,5.7404,-102.6824,0.8509645545,58,116
+n_trees=128,n_trees,128,128,128,4,256,256,standard,5.9296,-102.2433,0.8457784243,58,116
+sample_size=64,sample_size,64,64,64,4,256,256,standard,4.9702,-104.4691,0.8476898633,58,116
+sample_size=256,sample_size,256,64,256,4,256,256,standard,6.227,-101.5534,0.8515566514,58,116
+baseline,baseline,,64,128,4,256,256,reward_low_fp,4.241,-106.1608,0.8614324108,58,116
+n_trees=32,n_trees,32,32,128,4,256,256,reward_low_fp,3.5375,-107.7931,0.8635413836,58,116
+n_trees=128,n_trees,128,128,128,4,256,256,reward_low_fp,4.3559,-105.8944,0.8588034363,58,116
+sample_size=64,sample_size,64,64,64,4,256,256,reward_low_fp,4.1645,-106.3384,0.8563345971,58,116
+sample_size=256,sample_size,256,64,256,4,256,256,reward_low_fp,3.1748,-108.6344,0.8789965851,58,116
+baseline,baseline,,64,128,4,256,256,reward_low_fn,6.0846,-210.8255,0.8540914844,58,116
+n_trees=32,n_trees,32,32,128,4,256,256,reward_low_fn,7.1138,-207.2441,0.8447449972,58,116
+n_trees=128,n_trees,128,128,128,4,256,256,reward_low_fn,7.4013,-206.2433,0.8457784243,58,116
+sample_size=64,sample_size,64,64,64,4,256,256,reward_low_fn,6.0637,-210.8982,0.837665127,58,116
+sample_size=256,sample_size,256,64,256,4,256,256,reward_low_fn,7.9024,-204.4996,0.8189416304,58,116
