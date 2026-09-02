@@ -3,7 +3,7 @@
   "project": "nab-anomaly-detector",
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
-  "step_pointer": 12,
+  "step_pointer": 13,
   "last_green_tag": "green-nab-anomaly-detector-1",
   "steps": [
     {
@@ -270,6 +270,27 @@
         "why": "Phase-13 exit question before the Phase-14 hybrid: does tuning the forest close the ~35-point gap to Windowed Gaussian (40.13)? Answer: no. Tuning moves NAB by only ~1.3 points (standard 4.97-6.23); the forest stays in the 5-6 band.",
         "concept": "One-factor-at-a-time (OFAT): change one knob at a time so each score delta is attributable to a single parameter. sample_size shows the clearest effect and a real profile trade-off -- 256 is best on standard (6.23) and reward_low_fn (7.90) but worst on reward_low_fp (3.17), because a larger sub-sample makes the forest fire more, which the false-positive-averse profile penalises. Validity: the baseline config reproduced step-010's committed comparison.csv byte-exact (5.2476/4.2410/6.0846).",
         "next": "step-012: design and implement the hybrid combiner (best statistical detector + isolation forest), Phase 14."
+      }
+    },
+    {
+      "id": "step-012",
+      "phase": 14,
+      "title": "Design and implement hybrid combiner (best statistical + ML)",
+      "status": "done",
+      "done_on": "2026-09-02",
+      "commit_sha": null,
+      "files_touched": [
+        "src/hybrid.py",
+        "tests/test_hybrid.py",
+        ".project-meta/ledger.json",
+        ".project-meta/decisions.log"
+      ],
+      "tests_green": true,
+      "layman_note": {
+        "what": "New module src/hybrid.py: HybridDetector wraps the best statistical detector (WindowedGaussian) plus the ML detector (isolation forest) behind one streaming interface, combining their per-point scores under a configurable voting rule. Default rule weighted_average 0.7/0.3 favouring the stronger Gaussian; also max (union/recall), min (intersection/precision), mean. 19 new tests, 201/201 green.",
+        "why": "Phase-13 showed tuning the forest alone cannot close the ~35-point gap to Gaussian (40.13). Phase 14 asks whether COMBINING the two -- which make different mistakes (Gaussian = global amplitude, forest = short shapes) -- beats either alone. Step-012 builds the combiner; step-013 scores it.",
+        "concept": "Ensemble voting rule: turn two [0,1] anomaly scores into one combined score. weighted_average keeps the strong detector leading while the weak one nudges; max fires if either flags (higher recall, more false positives); min fires only if both agree (higher precision, more misses). Every sub-detector still consumes every point so its streaming state stays live regardless of the rule.",
+        "next": "step-013: score the hybrid on all 58 NAB streams and compare to all prior detectors (Phase 14)."
       }
     }
   ]
