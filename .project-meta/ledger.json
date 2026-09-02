@@ -278,7 +278,7 @@
       "title": "Design and implement hybrid combiner (best statistical + ML)",
       "status": "done",
       "done_on": "2026-09-02",
-      "commit_sha": null,
+      "commit_sha": "f5f92f9",
       "files_touched": [
         "src/hybrid.py",
         "tests/test_hybrid.py",
