@@ -299,7 +299,7 @@
    "title": "Score hybrid on NAB and compare to all prior detectors",
    "status": "done",
    "done_on": "2026-09-03",
-   "commit_sha": null,
+   "commit_sha": "5816b3a",
    "files_touched": [
     "src/score_hybrid.py",
     "tests/test_score_hybrid.py",
