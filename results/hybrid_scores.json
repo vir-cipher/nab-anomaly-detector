@@ -1,0 +1,32 @@
+{
+  "detector": "hybrid",
+  "rows": [
+    {
+      "detector": "hybrid",
+      "profile": "standard",
+      "nab_score": 11.4013,
+      "raw_score": -89.549,
+      "threshold": 0.9309366445,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "hybrid",
+      "profile": "reward_low_fp",
+      "nab_score": 6.25,
+      "raw_score": -101.5,
+      "threshold": 0.9531003598,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "hybrid",
+      "profile": "reward_low_fn",
+      "nab_score": 19.6698,
+      "raw_score": -163.549,
+      "threshold": 0.9309366445,
+      "num_streams": 58,
+      "total_windows": 116
+    }
+  ]
+}

@@ -2,9 +2,11 @@ detector,profile,nab_score,raw_score,threshold,num_streams,total_windows
 gaussian,standard,40.1349,-22.8871,1.0,58,116
 zscore,standard,23.4315,-61.6389,1.0,58,116
 ewma,standard,20.641,-68.1129,1.0,58,116
+hybrid,standard,11.4013,-89.549,0.9309366445,58,116
 iforest,standard,5.2476,-103.8255,0.8540914844,58,116
 threshold,standard,0.0,-116.0,1.1,58,116
 gaussian,reward_low_fp,23.9439,-60.4502,1.0,58,116
+hybrid,reward_low_fp,6.25,-101.5,0.9531003598,58,116
 iforest,reward_low_fp,4.241,-106.1608,0.8614324108,58,116
 ewma,reward_low_fp,0.0,-116.0,1.1,58,116
 zscore,reward_low_fp,0.0,-116.0,1.1,58,116
@@ -12,5 +14,6 @@ threshold,reward_low_fp,0.0,-116.0,1.1,58,116
 gaussian,reward_low_fn,47.7336,-65.8871,1.0,58,116
 zscore,reward_low_fn,36.598,-104.6389,1.0,58,116
 ewma,reward_low_fn,36.4618,-105.1129,1.0,58,116
+hybrid,reward_low_fn,19.6698,-163.549,0.9309366445,58,116
 iforest,reward_low_fn,6.0846,-210.8255,0.8540914844,58,116
 threshold,reward_low_fn,0.0,-232.0,1.1,58,116

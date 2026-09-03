@@ -2,6 +2,7 @@
   "detectors": [
     "ewma",
     "gaussian",
+    "hybrid",
     "iforest",
     "threshold",
     "zscore"
@@ -35,6 +36,15 @@
       "total_windows": 116
     },
     {
+      "detector": "hybrid",
+      "profile": "standard",
+      "nab_score": 11.4013,
+      "raw_score": -89.549,
+      "threshold": 0.9309366445,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
       "detector": "iforest",
       "profile": "standard",
       "nab_score": 5.2476,
@@ -58,6 +68,15 @@
       "nab_score": 23.9439,
       "raw_score": -60.4502,
       "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "hybrid",
+      "profile": "reward_low_fp",
+      "nab_score": 6.25,
+      "raw_score": -101.5,
+      "threshold": 0.9531003598,
       "num_streams": 58,
       "total_windows": 116
     },
@@ -121,6 +140,15 @@
       "nab_score": 36.4618,
       "raw_score": -105.1129,
       "threshold": 1.0,
+      "num_streams": 58,
+      "total_windows": 116
+    },
+    {
+      "detector": "hybrid",
+      "profile": "reward_low_fn",
+      "nab_score": 19.6698,
+      "raw_score": -163.549,
+      "threshold": 0.9309366445,
       "num_streams": 58,
       "total_windows": 116
     },

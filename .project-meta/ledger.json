@@ -1,297 +1,320 @@
 {
-  "_comment": "CANONICAL ledger (Rule 5). Lives in .project-meta/ledger.json, committed alongside code.",
-  "project": "nab-anomaly-detector",
-  "repo": "vir-cipher/nab-anomaly-detector",
-  "author": "vir-cipher",
-  "step_pointer": 13,
-  "last_green_tag": "green-nab-anomaly-detector-1",
-  "steps": [
-    {
-      "id": "step-000",
-      "status": "done",
-      "done_on": "2026-08-06",
-      "commit_sha": "bfb30824d308e198b1fc0250767d77ced5984a06",
-      "tests_green": true,
-      "files_touched": [
-        "README.md",
-        "docs/WALKTHROUGH.md",
-        "src/__init__.py",
-        "src/meta.py",
-        "tests/test_scaffold.py",
-        ".github/workflows/ci.yml",
-        "requirements.txt",
-        ".gitignore",
-        ".project-meta/spec.md",
-        ".project-meta/plan.json",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log",
-        "data/.gitkeep",
-        "results/.gitkeep"
-      ],
-      "layman_note": {
-        "what": "Built the project skeleton: folders, README, walkthrough, tests, CI, and a frozen 21-step plan.",
-        "why": "Every later step builds on a tested, scope-locked base \u00e2\u20ac\u201d no drift possible.",
-        "concept": "Scaffold \u00e2\u20ac\u201d the empty-but-working skeleton built before any real logic, so the project stays green from day one.",
-        "next": "Download the NAB dataset and document what is inside those 58 data streams."
-      }
-    },
-    {
-      "id": "step-001",
-      "status": "done",
-      "done_on": "2026-08-07",
-      "commit_sha": "74b7991",
-      "tests_green": true,
-      "files_touched": [
-        "src/download_nab.py",
-        "tests/test_nab_data.py",
-        "docs/WALKTHROUGH.md",
-        ".gitignore",
-        ".github/workflows/ci.yml",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
-      ],
-      "layman_note": {
-        "what": "Downloaded the full NAB dataset (58 CSV streams across 7 categories, plus ground-truth anomaly labels) via a reusable download script.",
-        "why": "The benchmark data is the raw material for everything that follows.",
-        "concept": "Data ingestion \u00e2\u20ac\u201d writing a script that fetches, organises, and validates a dataset so the pipeline starts from a clean, verified base.",
-        "next": "Implement the NAB scoring protocol so we can actually measure how good (or bad) our detectors are."
-      }
-    },
-    {
-      "id": "step-002",
-      "status": "done",
-      "done_on": "2026-08-09",
-      "commit_sha": "1a0f2ab",
-      "tests_green": true,
-      "files_touched": [
-        "src/scoring.py",
-        "tests/test_scoring.py",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
-      ],
-      "layman_note": {
-        "what": "Implemented the NAB scoring protocol with 3 application profiles (standard, reward-low-FP, reward-low-FN) and 29 unit tests.",
-        "why": "The scorer is the ruler that measures every detector we build \u00e2\u20ac\u201d without it, there is no way to compare our results to the published NAB leaderboard.",
-        "concept": "NAB scoring \u00e2\u20ac\u201d a scaled sigmoid rewards early detection within an anomaly window and penalises false alarms; scores are normalised so a null detector = 0 and a perfect detector = 100.",
-        "next": "Implement a null detector and verify it scores exactly 0 on the real NAB data \u00e2\u20ac\u201d validating the scoring pipeline end-to-end."
-      }
-    },
-    {
-      "id": "step-003",
-      "status": "done",
-      "done_on": "2026-08-13",
-      "commit_sha": "1856502",
-      "tests_green": true,
-      "files_touched": [
-        "src/detectors.py",
-        "src/data_loader.py",
-        "src/run_baseline.py",
-        "tests/test_detectors.py",
-        "results/null_baseline.json",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
-      ],
-      "layman_note": {
-        "what": "Built a null detector (always says 'no anomaly'), a data loader for all 58 NAB streams, and a scoring runner. Null detector scores exactly 0.0 on all 3 profiles \u00e2\u20ac\u201d validating the full pipeline end-to-end.",
-        "why": "The null baseline proves the scoring pipeline works correctly before we plug in real detectors. Score 0.0 is the mathematical expectation \u00e2\u20ac\u201d any other number would mean the scorer is broken.",
-        "concept": "Baseline \u00e2\u20ac\u201d a deliberately simple detector whose expected score is known in advance; if the measured score matches, the pipeline is trustworthy.",
-        "next": "Reproduce at least 1 published NAB baseline score and validate against published numbers."
-      }
-    },
-    {
-      "id": "step-004",
-      "status": "done",
-      "done_on": "2026-08-17",
-      "commit_sha": "44c73fc",
-      "tests_green": true,
-      "files_touched": [
-        "src/detectors.py",
-        "src/scoring.py",
-        "src/run_baseline.py",
-        "tests/test_detectors.py",
-        "results/gaussian_baseline.json",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
-      ],
-      "layman_note": {
-        "what": "Implemented Windowed Gaussian detector with incremental stats and sweep-based threshold optimizer. Reproduced published NAB baseline: standard 40.13 vs published 39.6 (1.4 pct diff), reward_low_fn 22.95 vs published 22.8 (0.7 pct diff).",
-        "why": "Reproducing a published score proves scoring pipeline plus detector match the original benchmark.",
-        "concept": "Windowed Gaussian: slides a fixed-size window, computing mean and std incrementally O(1). Points far from the mean score high via the Q-function tail probability.",
-        "next": "Implement a second detector and compare against the Gaussian baseline."
-      }
-    },
-    {
-      "id": "step-005",
-      "status": "done",
-      "done_on": "2026-08-19",
-      "commit_sha": "11acfc4",
-      "tests_green": true,
-      "files_touched": [
-        "src/detectors.py",
-        "tests/test_detectors.py",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
-      ],
-      "layman_note": {
-        "what": "Implemented EWMA (Exponentially Weighted Moving Average) detector with streaming interface, warmup phase, and O(1) memory. 13 new tests, 92/92 green.",
-        "why": "EWMA is the first statistical detector for the benchmark comparison. Unlike the windowed Gaussian, it uses no buffer \u00e2\u20ac\u201d just a smoothed average that weights recent values more heavily. This starts Phase 12 (statistical detectors).",
-        "concept": "EWMA: each new value updates a running average via alpha * new + (1-alpha) * old. Anomaly score = how far the current value is from the prediction, measured by a tail-probability function. O(1) memory, single tuning knob (alpha).",
-        "next": "Implement Z-score detector with streaming interface (step-006)."
-      }
-    },
-    {
-      "done_on": "2026-08-21",
-      "id": "step-006",
-      "files_touched": [
-        "src/detectors.py",
-        "tests/test_detectors.py",
-        ".project-meta/ledger.json"
-      ],
-      "title": "Z-score detector with streaming interface",
-      "layman_note": {
-        "what": "Implemented Z-score detector: a rolling window of 128 recent values, scoring each new point by how many standard deviations it sits from the window mean. 13 new tests, all green.",
-        "why": "Z-score is the second statistical detector for Phase 12. Its smaller window (128 vs 6400) reacts faster to local shifts than the Windowed Gaussian, giving us a contrasting detection profile for the final comparison.",
-        "concept": "Z-score: z = (value - mean) / std. A point 3 std above the mean is very unusual. The detector slides a fixed window (deque), so once old data falls out, the detector fully adapts to the new level -- unlike EWMA which decays gradually.",
-        "next": "Implement a simple threshold detector (step-007), then score all statistical detectors on the full NAB corpus."
-      },
-      "commit_sha": "aaa28d6",
-      "status": "done",
-      "tests_green": true
-    },
-    {
-      "id": "step-007",
-      "phase": 12,
-      "title": "Implement simple threshold detector",
-      "status": "done",
-      "done_on": "2026-08-24",
-      "commit_sha": "cf1c76b",
-      "files_touched": [
-        "src/detectors.py",
-        "tests/test_detectors.py",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
-      ],
-      "tests_green": true,
-      "layman_note": {
-        "what": "Implemented ThresholdDetector: learns a static [low, high] band (mean +/- 3 std) during a 100-point warmup, then freezes it forever. Returns a binary score (0.0 or 1.0), unlike the other three detectors' continuous probability scores. 14 new tests, 111/111 total green.",
-        "why": "This is the classic 'dumb baseline' streaming detector -- set thresholds once, never adapt. It completes the 4-detector lineup for Phase 12 (Gaussian, EWMA, Z-score, Threshold) needed for the step-008 comparison.",
-        "concept": "Static threshold: unlike Z-score's rolling window or EWMA's decay, once the warmup band is set it never moves. A test proves this directly -- after a sustained level shift, ThresholdDetector keeps flagging every point while ZScoreDetector's score drops as its window adapts.",
-        "next": "Step-008: score all 4 statistical detectors (Gaussian, EWMA, Z-score, Threshold) on the full NAB corpus and tabulate results."
-      }
-    },
-    {
-      "id": "step-008",
-      "phase": 12,
-      "title": "Score all statistical detectors on NAB and tabulate results",
-      "status": "done",
-      "done_on": "2026-08-25",
-      "commit_sha": "0d0632a",
-      "files_touched": [
-        "src/run_all_detectors.py",
-        "tests/test_run_all.py",
-        "results/statistical_detectors.csv",
-        "results/statistical_detectors.json",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
-      ],
-      "tests_green": true,
-      "layman_note": {
-        "what": "Scored all 4 statistical detectors (Windowed Gaussian, EWMA, Z-score, Threshold) on the full 58-stream NAB corpus with per-profile threshold sweeps. Consolidated leaderboard written to results/statistical_detectors.csv: Gaussian 40.13, Z-score 23.43, EWMA 20.64, Threshold 0.00 (standard profile). 11 new tests, 132/132 green.",
-        "why": "This is the Phase-12 exit gate: the tabulated leaderboard is the baseline the Phase-13 isolation forest and the final hybrid must beat. It also independently reproduced the step-004 Gaussian score (40.1349) to 4 decimals -- a free regression check.",
-        "concept": "Threshold sweep: NAB does not fix a detection cut-off; you pick the score threshold that maximizes each profile's reward. The static ThresholdDetector swept to 'never fire' (NAB 0.0 = same as the null detector) -- its false-positive cost outweighs every true detection, a textbook demonstration of why adaptive baselines matter on streaming data.",
-        "next": "Phase 13: implement the isolation-forest detector with a streaming adapter (step-009)."
-      }
-    },
-    {
-      "id": "step-009",
-      "phase": 13,
-      "title": "Implement isolation forest detector with streaming adapter",
-      "status": "done",
-      "done_on": "2026-08-27",
-      "commit_sha": "60889b5",
-      "files_touched": [
-        "src/iforest.py",
-        "tests/test_iforest.py",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
-      ],
-      "tests_green": true,
-      "layman_note": {
-        "what": "Implemented a pure-Python isolation forest (Liu et al. 2008) in new module src/iforest.py, plus a streaming adapter: each point becomes a 4-value shingle, the forest first trains on 256 shingles, then retrains every 256 points on the most recent 256. 26 new tests, 158/158 green.",
-        "why": "Phase 13 begins: this is the ML detector that must challenge the statistical leaderboard (Gaussian 40.13). Unlike the statistical detectors, which model what normal looks like, isolation forest directly hunts for points that are easy to separate from the crowd.",
-        "concept": "Isolation: anomalies are few and different, so random splits isolate them near the top of a random tree. Score = 2^(-avg_depth / c(psi)) -- roughly 0.5 for average points, near 1.0 for anomalies isolated in short paths.",
-        "next": "step-010: score the isolation forest on the full NAB corpus and add it to the comparison table against the 4 statistical detectors."
-      }
-    },
-    {
-      "id": "step-010",
-      "phase": 13,
-      "title": "Score isolation forest on NAB and compare to statistical detectors",
-      "status": "done",
-      "done_on": "2026-08-29",
-      "commit_sha": "1efbab8",
-      "files_touched": [
-        "src/score_iforest.py",
-        "tests/test_score_iforest.py",
-        "results/iforest_scores.json",
-        "results/comparison.csv",
-        "results/comparison.json",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
-      ],
-      "tests_green": true,
-      "layman_note": {
-        "what": "Scored the pure-Python isolation forest on all 58 NAB streams with the same per-profile threshold sweep used for the statistical detectors (reused run_all_detectors.score_all), then merged it into a 5-detector leaderboard: results/comparison.csv + comparison.json. Standard profile: Gaussian 40.13, Z-score 23.43, EWMA 20.64, iforest 5.25, Threshold 0.00. 11 new tests, 169/169 green.",
-        "why": "Phase-13 core question -- does the ML detector beat the statistical baselines? On the standard profile it does NOT (5.25 vs Gaussian 40.13), but it clears the null/threshold floor of 0.00, and under reward_low_fp it holds 4.24 while EWMA and Z-score both collapse to 0.00 -- ranking 2nd behind Gaussian on that profile.",
-        "concept": "Same-ruler comparison -- scoring every detector through the identical sweep machinery makes the numbers directly comparable and re-reproduces the step-008 statistical scores exactly (a free regression check). A naive streaming isolation forest underperforming tuned statistical detectors on NAB is a real, documented result, not a bug.",
-        "next": "step-011: parameter sensitivity analysis for the isolation forest (>=3 configs) to see whether tuning closes the gap before the Phase-14 hybrid."
-      }
-    },
-    {
-      "id": "step-011",
-      "phase": 13,
-      "title": "Parameter sensitivity analysis for isolation forest",
-      "status": "done",
-      "done_on": "2026-09-01",
-      "commit_sha": "1a5df63",
-      "files_touched": [
-        "src/param_sensitivity.py",
-        "tests/test_param_sensitivity.py",
-        "results/iforest_sensitivity.csv",
-        "results/iforest_sensitivity.json",
-        "docs/WALKTHROUGH.md",
-        ".gitignore",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
-      ],
-      "tests_green": true,
-      "layman_note": {
-        "what": "OFAT parameter sweep for the isolation forest via new module src/param_sensitivity.py: n_trees (32/64/128) and sample_size (64/128/256), 5 configs x 3 profiles, scored through the same run_all_detectors.score_all machinery. Results in results/iforest_sensitivity.csv + .json. 13 new tests, 182/182 green.",
-        "why": "Phase-13 exit question before the Phase-14 hybrid: does tuning the forest close the ~35-point gap to Windowed Gaussian (40.13)? Answer: no. Tuning moves NAB by only ~1.3 points (standard 4.97-6.23); the forest stays in the 5-6 band.",
-        "concept": "One-factor-at-a-time (OFAT): change one knob at a time so each score delta is attributable to a single parameter. sample_size shows the clearest effect and a real profile trade-off -- 256 is best on standard (6.23) and reward_low_fn (7.90) but worst on reward_low_fp (3.17), because a larger sub-sample makes the forest fire more, which the false-positive-averse profile penalises. Validity: the baseline config reproduced step-010's committed comparison.csv byte-exact (5.2476/4.2410/6.0846).",
-        "next": "step-012: design and implement the hybrid combiner (best statistical detector + isolation forest), Phase 14."
-      }
-    },
-    {
-      "id": "step-012",
-      "phase": 14,
-      "title": "Design and implement hybrid combiner (best statistical + ML)",
-      "status": "done",
-      "done_on": "2026-09-02",
-      "commit_sha": "f5f92f9",
-      "files_touched": [
-        "src/hybrid.py",
-        "tests/test_hybrid.py",
-        ".project-meta/ledger.json",
-        ".project-meta/decisions.log"
-      ],
-      "tests_green": true,
-      "layman_note": {
-        "what": "New module src/hybrid.py: HybridDetector wraps the best statistical detector (WindowedGaussian) plus the ML detector (isolation forest) behind one streaming interface, combining their per-point scores under a configurable voting rule. Default rule weighted_average 0.7/0.3 favouring the stronger Gaussian; also max (union/recall), min (intersection/precision), mean. 19 new tests, 201/201 green.",
-        "why": "Phase-13 showed tuning the forest alone cannot close the ~35-point gap to Gaussian (40.13). Phase 14 asks whether COMBINING the two -- which make different mistakes (Gaussian = global amplitude, forest = short shapes) -- beats either alone. Step-012 builds the combiner; step-013 scores it.",
-        "concept": "Ensemble voting rule: turn two [0,1] anomaly scores into one combined score. weighted_average keeps the strong detector leading while the weak one nudges; max fires if either flags (higher recall, more false positives); min fires only if both agree (higher precision, more misses). Every sub-detector still consumes every point so its streaming state stays live regardless of the rule.",
-        "next": "step-013: score the hybrid on all 58 NAB streams and compare to all prior detectors (Phase 14)."
-      }
-    }
-  ]
+ "_comment": "CANONICAL ledger (Rule 5). Lives in .project-meta/ledger.json, committed alongside code.",
+ "project": "nab-anomaly-detector",
+ "repo": "vir-cipher/nab-anomaly-detector",
+ "author": "vir-cipher",
+ "step_pointer": 14,
+ "last_green_tag": "green-nab-anomaly-detector-1",
+ "steps": [
+  {
+   "id": "step-000",
+   "status": "done",
+   "done_on": "2026-08-06",
+   "commit_sha": "bfb30824d308e198b1fc0250767d77ced5984a06",
+   "tests_green": true,
+   "files_touched": [
+    "README.md",
+    "docs/WALKTHROUGH.md",
+    "src/__init__.py",
+    "src/meta.py",
+    "tests/test_scaffold.py",
+    ".github/workflows/ci.yml",
+    "requirements.txt",
+    ".gitignore",
+    ".project-meta/spec.md",
+    ".project-meta/plan.json",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log",
+    "data/.gitkeep",
+    "results/.gitkeep"
+   ],
+   "layman_note": {
+    "what": "Built the project skeleton: folders, README, walkthrough, tests, CI, and a frozen 21-step plan.",
+    "why": "Every later step builds on a tested, scope-locked base â€” no drift possible.",
+    "concept": "Scaffold â€” the empty-but-working skeleton built before any real logic, so the project stays green from day one.",
+    "next": "Download the NAB dataset and document what is inside those 58 data streams."
+   }
+  },
+  {
+   "id": "step-001",
+   "status": "done",
+   "done_on": "2026-08-07",
+   "commit_sha": "74b7991",
+   "tests_green": true,
+   "files_touched": [
+    "src/download_nab.py",
+    "tests/test_nab_data.py",
+    "docs/WALKTHROUGH.md",
+    ".gitignore",
+    ".github/workflows/ci.yml",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "layman_note": {
+    "what": "Downloaded the full NAB dataset (58 CSV streams across 7 categories, plus ground-truth anomaly labels) via a reusable download script.",
+    "why": "The benchmark data is the raw material for everything that follows.",
+    "concept": "Data ingestion â€” writing a script that fetches, organises, and validates a dataset so the pipeline starts from a clean, verified base.",
+    "next": "Implement the NAB scoring protocol so we can actually measure how good (or bad) our detectors are."
+   }
+  },
+  {
+   "id": "step-002",
+   "status": "done",
+   "done_on": "2026-08-09",
+   "commit_sha": "1a0f2ab",
+   "tests_green": true,
+   "files_touched": [
+    "src/scoring.py",
+    "tests/test_scoring.py",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "layman_note": {
+    "what": "Implemented the NAB scoring protocol with 3 application profiles (standard, reward-low-FP, reward-low-FN) and 29 unit tests.",
+    "why": "The scorer is the ruler that measures every detector we build â€” without it, there is no way to compare our results to the published NAB leaderboard.",
+    "concept": "NAB scoring â€” a scaled sigmoid rewards early detection within an anomaly window and penalises false alarms; scores are normalised so a null detector = 0 and a perfect detector = 100.",
+    "next": "Implement a null detector and verify it scores exactly 0 on the real NAB data â€” validating the scoring pipeline end-to-end."
+   }
+  },
+  {
+   "id": "step-003",
+   "status": "done",
+   "done_on": "2026-08-13",
+   "commit_sha": "1856502",
+   "tests_green": true,
+   "files_touched": [
+    "src/detectors.py",
+    "src/data_loader.py",
+    "src/run_baseline.py",
+    "tests/test_detectors.py",
+    "results/null_baseline.json",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "layman_note": {
+    "what": "Built a null detector (always says 'no anomaly'), a data loader for all 58 NAB streams, and a scoring runner. Null detector scores exactly 0.0 on all 3 profiles â€” validating the full pipeline end-to-end.",
+    "why": "The null baseline proves the scoring pipeline works correctly before we plug in real detectors. Score 0.0 is the mathematical expectation â€” any other number would mean the scorer is broken.",
+    "concept": "Baseline â€” a deliberately simple detector whose expected score is known in advance; if the measured score matches, the pipeline is trustworthy.",
+    "next": "Reproduce at least 1 published NAB baseline score and validate against published numbers."
+   }
+  },
+  {
+   "id": "step-004",
+   "status": "done",
+   "done_on": "2026-08-17",
+   "commit_sha": "44c73fc",
+   "tests_green": true,
+   "files_touched": [
+    "src/detectors.py",
+    "src/scoring.py",
+    "src/run_baseline.py",
+    "tests/test_detectors.py",
+    "results/gaussian_baseline.json",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "layman_note": {
+    "what": "Implemented Windowed Gaussian detector with incremental stats and sweep-based threshold optimizer. Reproduced published NAB baseline: standard 40.13 vs published 39.6 (1.4 pct diff), reward_low_fn 22.95 vs published 22.8 (0.7 pct diff).",
+    "why": "Reproducing a published score proves scoring pipeline plus detector match the original benchmark.",
+    "concept": "Windowed Gaussian: slides a fixed-size window, computing mean and std incrementally O(1). Points far from the mean score high via the Q-function tail probability.",
+    "next": "Implement a second detector and compare against the Gaussian baseline."
+   }
+  },
+  {
+   "id": "step-005",
+   "status": "done",
+   "done_on": "2026-08-19",
+   "commit_sha": "11acfc4",
+   "tests_green": true,
+   "files_touched": [
+    "src/detectors.py",
+    "tests/test_detectors.py",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "layman_note": {
+    "what": "Implemented EWMA (Exponentially Weighted Moving Average) detector with streaming interface, warmup phase, and O(1) memory. 13 new tests, 92/92 green.",
+    "why": "EWMA is the first statistical detector for the benchmark comparison. Unlike the windowed Gaussian, it uses no buffer â€” just a smoothed average that weights recent values more heavily. This starts Phase 12 (statistical detectors).",
+    "concept": "EWMA: each new value updates a running average via alpha * new + (1-alpha) * old. Anomaly score = how far the current value is from the prediction, measured by a tail-probability function. O(1) memory, single tuning knob (alpha).",
+    "next": "Implement Z-score detector with streaming interface (step-006)."
+   }
+  },
+  {
+   "done_on": "2026-08-21",
+   "id": "step-006",
+   "files_touched": [
+    "src/detectors.py",
+    "tests/test_detectors.py",
+    ".project-meta/ledger.json"
+   ],
+   "title": "Z-score detector with streaming interface",
+   "layman_note": {
+    "what": "Implemented Z-score detector: a rolling window of 128 recent values, scoring each new point by how many standard deviations it sits from the window mean. 13 new tests, all green.",
+    "why": "Z-score is the second statistical detector for Phase 12. Its smaller window (128 vs 6400) reacts faster to local shifts than the Windowed Gaussian, giving us a contrasting detection profile for the final comparison.",
+    "concept": "Z-score: z = (value - mean) / std. A point 3 std above the mean is very unusual. The detector slides a fixed window (deque), so once old data falls out, the detector fully adapts to the new level -- unlike EWMA which decays gradually.",
+    "next": "Implement a simple threshold detector (step-007), then score all statistical detectors on the full NAB corpus."
+   },
+   "commit_sha": "aaa28d6",
+   "status": "done",
+   "tests_green": true
+  },
+  {
+   "id": "step-007",
+   "phase": 12,
+   "title": "Implement simple threshold detector",
+   "status": "done",
+   "done_on": "2026-08-24",
+   "commit_sha": "cf1c76b",
+   "files_touched": [
+    "src/detectors.py",
+    "tests/test_detectors.py",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "Implemented ThresholdDetector: learns a static [low, high] band (mean +/- 3 std) during a 100-point warmup, then freezes it forever. Returns a binary score (0.0 or 1.0), unlike the other three detectors' continuous probability scores. 14 new tests, 111/111 total green.",
+    "why": "This is the classic 'dumb baseline' streaming detector -- set thresholds once, never adapt. It completes the 4-detector lineup for Phase 12 (Gaussian, EWMA, Z-score, Threshold) needed for the step-008 comparison.",
+    "concept": "Static threshold: unlike Z-score's rolling window or EWMA's decay, once the warmup band is set it never moves. A test proves this directly -- after a sustained level shift, ThresholdDetector keeps flagging every point while ZScoreDetector's score drops as its window adapts.",
+    "next": "Step-008: score all 4 statistical detectors (Gaussian, EWMA, Z-score, Threshold) on the full NAB corpus and tabulate results."
+   }
+  },
+  {
+   "id": "step-008",
+   "phase": 12,
+   "title": "Score all statistical detectors on NAB and tabulate results",
+   "status": "done",
+   "done_on": "2026-08-25",
+   "commit_sha": "0d0632a",
+   "files_touched": [
+    "src/run_all_detectors.py",
+    "tests/test_run_all.py",
+    "results/statistical_detectors.csv",
+    "results/statistical_detectors.json",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "Scored all 4 statistical detectors (Windowed Gaussian, EWMA, Z-score, Threshold) on the full 58-stream NAB corpus with per-profile threshold sweeps. Consolidated leaderboard written to results/statistical_detectors.csv: Gaussian 40.13, Z-score 23.43, EWMA 20.64, Threshold 0.00 (standard profile). 11 new tests, 132/132 green.",
+    "why": "This is the Phase-12 exit gate: the tabulated leaderboard is the baseline the Phase-13 isolation forest and the final hybrid must beat. It also independently reproduced the step-004 Gaussian score (40.1349) to 4 decimals -- a free regression check.",
+    "concept": "Threshold sweep: NAB does not fix a detection cut-off; you pick the score threshold that maximizes each profile's reward. The static ThresholdDetector swept to 'never fire' (NAB 0.0 = same as the null detector) -- its false-positive cost outweighs every true detection, a textbook demonstration of why adaptive baselines matter on streaming data.",
+    "next": "Phase 13: implement the isolation-forest detector with a streaming adapter (step-009)."
+   }
+  },
+  {
+   "id": "step-009",
+   "phase": 13,
+   "title": "Implement isolation forest detector with streaming adapter",
+   "status": "done",
+   "done_on": "2026-08-27",
+   "commit_sha": "60889b5",
+   "files_touched": [
+    "src/iforest.py",
+    "tests/test_iforest.py",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "Implemented a pure-Python isolation forest (Liu et al. 2008) in new module src/iforest.py, plus a streaming adapter: each point becomes a 4-value shingle, the forest first trains on 256 shingles, then retrains every 256 points on the most recent 256. 26 new tests, 158/158 green.",
+    "why": "Phase 13 begins: this is the ML detector that must challenge the statistical leaderboard (Gaussian 40.13). Unlike the statistical detectors, which model what normal looks like, isolation forest directly hunts for points that are easy to separate from the crowd.",
+    "concept": "Isolation: anomalies are few and different, so random splits isolate them near the top of a random tree. Score = 2^(-avg_depth / c(psi)) -- roughly 0.5 for average points, near 1.0 for anomalies isolated in short paths.",
+    "next": "step-010: score the isolation forest on the full NAB corpus and add it to the comparison table against the 4 statistical detectors."
+   }
+  },
+  {
+   "id": "step-010",
+   "phase": 13,
+   "title": "Score isolation forest on NAB and compare to statistical detectors",
+   "status": "done",
+   "done_on": "2026-08-29",
+   "commit_sha": "1efbab8",
+   "files_touched": [
+    "src/score_iforest.py",
+    "tests/test_score_iforest.py",
+    "results/iforest_scores.json",
+    "results/comparison.csv",
+    "results/comparison.json",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "Scored the pure-Python isolation forest on all 58 NAB streams with the same per-profile threshold sweep used for the statistical detectors (reused run_all_detectors.score_all), then merged it into a 5-detector leaderboard: results/comparison.csv + comparison.json. Standard profile: Gaussian 40.13, Z-score 23.43, EWMA 20.64, iforest 5.25, Threshold 0.00. 11 new tests, 169/169 green.",
+    "why": "Phase-13 core question -- does the ML detector beat the statistical baselines? On the standard profile it does NOT (5.25 vs Gaussian 40.13), but it clears the null/threshold floor of 0.00, and under reward_low_fp it holds 4.24 while EWMA and Z-score both collapse to 0.00 -- ranking 2nd behind Gaussian on that profile.",
+    "concept": "Same-ruler comparison -- scoring every detector through the identical sweep machinery makes the numbers directly comparable and re-reproduces the step-008 statistical scores exactly (a free regression check). A naive streaming isolation forest underperforming tuned statistical detectors on NAB is a real, documented result, not a bug.",
+    "next": "step-011: parameter sensitivity analysis for the isolation forest (>=3 configs) to see whether tuning closes the gap before the Phase-14 hybrid."
+   }
+  },
+  {
+   "id": "step-011",
+   "phase": 13,
+   "title": "Parameter sensitivity analysis for isolation forest",
+   "status": "done",
+   "done_on": "2026-09-01",
+   "commit_sha": "1a5df63",
+   "files_touched": [
+    "src/param_sensitivity.py",
+    "tests/test_param_sensitivity.py",
+    "results/iforest_sensitivity.csv",
+    "results/iforest_sensitivity.json",
+    "docs/WALKTHROUGH.md",
+    ".gitignore",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "OFAT parameter sweep for the isolation forest via new module src/param_sensitivity.py: n_trees (32/64/128) and sample_size (64/128/256), 5 configs x 3 profiles, scored through the same run_all_detectors.score_all machinery. Results in results/iforest_sensitivity.csv + .json. 13 new tests, 182/182 green.",
+    "why": "Phase-13 exit question before the Phase-14 hybrid: does tuning the forest close the ~35-point gap to Windowed Gaussian (40.13)? Answer: no. Tuning moves NAB by only ~1.3 points (standard 4.97-6.23); the forest stays in the 5-6 band.",
+    "concept": "One-factor-at-a-time (OFAT): change one knob at a time so each score delta is attributable to a single parameter. sample_size shows the clearest effect and a real profile trade-off -- 256 is best on standard (6.23) and reward_low_fn (7.90) but worst on reward_low_fp (3.17), because a larger sub-sample makes the forest fire more, which the false-positive-averse profile penalises. Validity: the baseline config reproduced step-010's committed comparison.csv byte-exact (5.2476/4.2410/6.0846).",
+    "next": "step-012: design and implement the hybrid combiner (best statistical detector + isolation forest), Phase 14."
+   }
+  },
+  {
+   "id": "step-012",
+   "phase": 14,
+   "title": "Design and implement hybrid combiner (best statistical + ML)",
+   "status": "done",
+   "done_on": "2026-09-02",
+   "commit_sha": "f5f92f9",
+   "files_touched": [
+    "src/hybrid.py",
+    "tests/test_hybrid.py",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "New module src/hybrid.py: HybridDetector wraps the best statistical detector (WindowedGaussian) plus the ML detector (isolation forest) behind one streaming interface, combining their per-point scores under a configurable voting rule. Default rule weighted_average 0.7/0.3 favouring the stronger Gaussian; also max (union/recall), min (intersection/precision), mean. 19 new tests, 201/201 green.",
+    "why": "Phase-13 showed tuning the forest alone cannot close the ~35-point gap to Gaussian (40.13). Phase 14 asks whether COMBINING the two -- which make different mistakes (Gaussian = global amplitude, forest = short shapes) -- beats either alone. Step-012 builds the combiner; step-013 scores it.",
+    "concept": "Ensemble voting rule: turn two [0,1] anomaly scores into one combined score. weighted_average keeps the strong detector leading while the weak one nudges; max fires if either flags (higher recall, more false positives); min fires only if both agree (higher precision, more misses). Every sub-detector still consumes every point so its streaming state stays live regardless of the rule.",
+    "next": "step-013: score the hybrid on all 58 NAB streams and compare to all prior detectors (Phase 14)."
+   }
+  },
+  {
+   "id": "step-013",
+   "phase": 14,
+   "title": "Score hybrid on NAB and compare to all prior detectors",
+   "status": "done",
+   "done_on": "2026-09-03",
+   "commit_sha": null,
+   "files_touched": [
+    "src/score_hybrid.py",
+    "tests/test_score_hybrid.py",
+    "results/hybrid_scores.json",
+    "results/comparison.csv",
+    "results/comparison.json",
+    ".project-meta/ledger.json"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "New module src/score_hybrid.py scores the HybridDetector (default weighted_average, 0.7 WindowedGaussian / 0.3 isolation forest) on all 58 NAB streams x 3 profiles through the same run_all_detectors.score_all sweep machinery, writes results/hybrid_scores.json, and rebuilds the 6-detector leaderboard (results/comparison.csv + .json). 12 new tests, 213/213 green.",
+    "why": "Phase-14 question: does COMBINING the strong statistical detector with the ML detector beat either alone? Honest answer on the default weights: no. Hybrid standard NAB = 11.40, far below Gaussian's 40.13 -- the forest's ~0.5 baseline noise, weighted 0.3, blurs the Gaussian's sharp 0/1 signal and drags the combined score out of the optimal threshold band.",
+    "concept": "Leaderboard / NAB score: every detector is swept for its best per-profile threshold, then ranked by NAB score (higher = better). Standard-profile ranking now: gaussian 40.13 > zscore 23.43 > ewma 20.64 > hybrid 11.40 > iforest 5.25 > threshold 0.00. Lesson: a weighted-average ensemble only helps when both members are individually strong; blending a strong detector with a 7.6x-weaker one pulls the strong one down.",
+    "next": "step-014: runtime benchmarking -- wall-clock per stream per detector (the '10x speed' half of the project claim)."
+   }
+  }
+ ]
 }
