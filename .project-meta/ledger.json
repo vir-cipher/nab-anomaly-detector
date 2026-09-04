@@ -322,7 +322,7 @@
    "title": "Runtime benchmarking - wall-clock per stream for each detector",
    "status": "done",
    "done_on": "2026-09-04",
-   "commit_sha": "PENDING",
+   "commit_sha": "e95b1b5",
    "files_touched": [
     "src/benchmark_runtime.py",
     "tests/test_benchmark_runtime.py",
