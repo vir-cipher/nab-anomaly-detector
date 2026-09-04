@@ -185,4 +185,28 @@ More trees help marginally (ensembles stabilise well before 100 trees, Liu 2008 
 attributable to the parameters alone. This motivates the Phase-14 hybrid: statistics
 carry the accuracy, the forest contributes where false alarms are expensive.
 
+### Runtime — how fast is each detector? (step-014)
+
+Accuracy is only half the headline; the other half is *speed*. `src/benchmark_runtime.py`
+streams the whole NAB corpus (365,558 points, 58 streams) through each detector one point
+at a time and times only the `handle_record` loop (a fresh detector per stream, best of
+repeated passes to trim OS noise). Results in `results/runtime_benchmark.csv`:
+
+| detector  | points/sec | us/point | speed-up vs iforest |
+|-----------|-----------:|---------:|--------------------:|
+| threshold | 7,492,417  |   0.13   |      835.8x         |
+| gaussian  | 1,402,069  |   0.71   |      156.4x         |
+| ewma      | 1,169,500  |   0.86   |      130.5x         |
+| zscore    | 1,019,969  |   0.98   |      113.8x         |
+| hybrid    |     9,254  | 108.06   |        1.03x        |
+| iforest   |     8,964  | 111.55   |     1.00x (ref)     |
+
+**What it shows.** Every statistical detector is 114x–836x faster than the pure-Python
+isolation forest. The accuracy leader — Windowed Gaussian (NAB 40.13) — is ~156x faster
+than the forest, so it wins on **both** axes. The hybrid runs at forest speed (1.03x)
+because it embeds the forest: the default hybrid is therefore slower *and* (step-013) less
+accurate than plain Gaussian. Absolute times are machine-specific (Python 3.14, Intel
+11th-gen); the portable finding is the ratio. The project's "10x speed" ambition is beaten
+by more than a full order of magnitude — through the simple statistical detectors, not the ML one.
+
 ## 7–9. (Sections added as phases complete.)

@@ -1,0 +1,1876 @@
+{
+  "meta": {
+    "generated_by": "src/benchmark_runtime.py (step-014)",
+    "python_version": "3.14.5",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+    "repeats": 1,
+    "reference_detector": "iforest",
+    "timed": "handle_record loop only; best-of-repeats per stream",
+    "note": "Absolute times are machine-specific; speedup_vs_iforest is the portable finding."
+  },
+  "rows": [
+    {
+      "detector": "threshold",
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 0.04879,
+      "points_per_sec": 7492416.54,
+      "us_per_point": 0.1335,
+      "mean_ms_per_stream": 0.8412,
+      "speedup_vs_iforest": 835.808
+    },
+    {
+      "detector": "gaussian",
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 0.260727,
+      "points_per_sec": 1402069.21,
+      "us_per_point": 0.7132,
+      "mean_ms_per_stream": 4.4953,
+      "speedup_vs_iforest": 156.406
+    },
+    {
+      "detector": "ewma",
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 0.312576,
+      "points_per_sec": 1169499.68,
+      "us_per_point": 0.8551,
+      "mean_ms_per_stream": 5.3892,
+      "speedup_vs_iforest": 130.462
+    },
+    {
+      "detector": "zscore",
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 0.358401,
+      "points_per_sec": 1019968.97,
+      "us_per_point": 0.9804,
+      "mean_ms_per_stream": 6.1793,
+      "speedup_vs_iforest": 113.781
+    },
+    {
+      "detector": "hybrid",
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 39.501921,
+      "points_per_sec": 9254.18,
+      "us_per_point": 108.0592,
+      "mean_ms_per_stream": 681.0676,
+      "speedup_vs_iforest": 1.032
+    },
+    {
+      "detector": "iforest",
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 40.779408,
+      "points_per_sec": 8964.28,
+      "us_per_point": 111.5539,
+      "mean_ms_per_stream": 703.0932,
+      "speedup_vs_iforest": 1.0
+    }
+  ],
+  "per_stream": {
+    "gaussian": {
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 0.2607274999609217,
+      "points_per_sec": 1402069.210400861,
+      "us_per_point": 0.7132315527520167,
+      "mean_ms_per_stream": 4.495301723464167,
+      "per_stream": {
+        "artificialNoAnomaly/art_daily_no_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.0033475999953225255,
+          "points_per_sec": 1204444.9771877646
+        },
+        "artificialNoAnomaly/art_daily_perfect_square_wave.csv": {
+          "n_points": 4032,
+          "seconds": 0.003004099999088794,
+          "points_per_sec": 1342165.707274388
+        },
+        "artificialNoAnomaly/art_daily_small_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.0027823999989777803,
+          "points_per_sec": 1449108.683683621
+        },
+        "artificialNoAnomaly/art_flatline.csv": {
+          "n_points": 4032,
+          "seconds": 0.0025940000195987523,
+          "points_per_sec": 1554356.1948868767
+        },
+        "artificialNoAnomaly/art_noisy.csv": {
+          "n_points": 4032,
+          "seconds": 0.0027934999961871654,
+          "points_per_sec": 1443350.6373736379
+        },
+        "artificialWithAnomaly/art_daily_flatmiddle.csv": {
+          "n_points": 4032,
+          "seconds": 0.0027283999952487648,
+          "points_per_sec": 1477789.1830454934
+        },
+        "artificialWithAnomaly/art_daily_jumpsdown.csv": {
+          "n_points": 4032,
+          "seconds": 0.002900099992984906,
+          "points_per_sec": 1390296.8896772745
+        },
+        "artificialWithAnomaly/art_daily_jumpsup.csv": {
+          "n_points": 4032,
+          "seconds": 0.0030661999771837145,
+          "points_per_sec": 1314982.7245460248
+        },
+        "artificialWithAnomaly/art_daily_nojump.csv": {
+          "n_points": 4032,
+          "seconds": 0.00275580000015907,
+          "points_per_sec": 1463096.0155915762
+        },
+        "artificialWithAnomaly/art_increase_spike_density.csv": {
+          "n_points": 4032,
+          "seconds": 0.002783599979011342,
+          "points_per_sec": 1448483.9885047188
+        },
+        "artificialWithAnomaly/art_load_balancer_spikes.csv": {
+          "n_points": 4032,
+          "seconds": 0.00280770001700148,
+          "points_per_sec": 1436050.851438904
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_24ae8d.csv": {
+          "n_points": 4032,
+          "seconds": 0.0028052999987266958,
+          "points_per_sec": 1437279.4360068776
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_53ea38.csv": {
+          "n_points": 4032,
+          "seconds": 0.0029010000289417803,
+          "points_per_sec": 1389865.5497327875
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_5f5533.csv": {
+          "n_points": 4032,
+          "seconds": 0.002893400000175461,
+          "points_per_sec": 1393516.278342259
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_77c1ca.csv": {
+          "n_points": 4032,
+          "seconds": 0.0028091999993193895,
+          "points_per_sec": 1435284.0669859282
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_825cc2.csv": {
+          "n_points": 4032,
+          "seconds": 0.0026981999981217086,
+          "points_per_sec": 1494329.5540756008
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_ac20cd.csv": {
+          "n_points": 4032,
+          "seconds": 0.002657499979250133,
+          "points_per_sec": 1517215.4398803457
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_c6585a.csv": {
+          "n_points": 4032,
+          "seconds": 0.0029436000040732324,
+          "points_per_sec": 1369751.32301287
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_fe7f93.csv": {
+          "n_points": 4032,
+          "seconds": 0.0029827000107616186,
+          "points_per_sec": 1351795.348326179
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_1ef3de.csv": {
+          "n_points": 4730,
+          "seconds": 0.0032876000041142106,
+          "points_per_sec": 1438739.5042221446
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_c0d644.csv": {
+          "n_points": 4032,
+          "seconds": 0.002795299980789423,
+          "points_per_sec": 1442421.2169390563
+        },
+        "realAWSCloudwatch/ec2_network_in_257a54.csv": {
+          "n_points": 4032,
+          "seconds": 0.0028448000084608793,
+          "points_per_sec": 1417322.83043033
+        },
+        "realAWSCloudwatch/ec2_network_in_5abac7.csv": {
+          "n_points": 4730,
+          "seconds": 0.0036020000115968287,
+          "points_per_sec": 1313159.3516855957
+        },
+        "realAWSCloudwatch/elb_request_count_8c0756.csv": {
+          "n_points": 4032,
+          "seconds": 0.0030107999918982387,
+          "points_per_sec": 1339178.959362863
+        },
+        "realAWSCloudwatch/grok_asg_anomaly.csv": {
+          "n_points": 4621,
+          "seconds": 0.003264600003603846,
+          "points_per_sec": 1415487.3475766715
+        },
+        "realAWSCloudwatch/iio_us-east-1_i-a2eb1cd9_NetworkIn.csv": {
+          "n_points": 1243,
+          "seconds": 0.0008449000015389174,
+          "points_per_sec": 1471180.0186246603
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_cc0c53.csv": {
+          "n_points": 4032,
+          "seconds": 0.002767800004221499,
+          "points_per_sec": 1456752.6533168294
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_e47b3b.csv": {
+          "n_points": 4032,
+          "seconds": 0.002676899981452152,
+          "points_per_sec": 1506219.8916422494
+        },
+        "realAdExchange/exchange-2_cpc_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.0010935000027529895,
+          "points_per_sec": 1485139.4567091237
+        },
+        "realAdExchange/exchange-2_cpm_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.001137999992351979,
+          "points_per_sec": 1427065.0359527445
+        },
+        "realAdExchange/exchange-3_cpc_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.001206599990837276,
+          "points_per_sec": 1274656.0680252956
+        },
+        "realAdExchange/exchange-3_cpm_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.00109200002043508,
+          "points_per_sec": 1408424.8820684294
+        },
+        "realAdExchange/exchange-4_cpc_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.001129699987359345,
+          "points_per_sec": 1454368.43266723
+        },
+        "realAdExchange/exchange-4_cpm_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.0011193999962415546,
+          "points_per_sec": 1467750.5855962662
+        },
+        "realKnownCause/ambient_temperature_system_failure.csv": {
+          "n_points": 7267,
+          "seconds": 0.005161500012036413,
+          "points_per_sec": 1407924.0498021205
+        },
+        "realKnownCause/cpu_utilization_asg_misconfiguration.csv": {
+          "n_points": 18050,
+          "seconds": 0.012986900022951886,
+          "points_per_sec": 1389862.0893438808
+        },
+        "realKnownCause/ec2_request_latency_system_failure.csv": {
+          "n_points": 4032,
+          "seconds": 0.0028325000021141022,
+          "points_per_sec": 1423477.4923179604
+        },
+        "realKnownCause/machine_temperature_system_failure.csv": {
+          "n_points": 22695,
+          "seconds": 0.016532300011022016,
+          "points_per_sec": 1372767.2486507827
+        },
+        "realKnownCause/nyc_taxi.csv": {
+          "n_points": 10320,
+          "seconds": 0.006906800001161173,
+          "points_per_sec": 1494179.6487903225
+        },
+        "realKnownCause/rogue_agent_key_hold.csv": {
+          "n_points": 1882,
+          "seconds": 0.0014217999996617436,
+          "points_per_sec": 1323674.216097722
+        },
+        "realKnownCause/rogue_agent_key_updown.csv": {
+          "n_points": 5315,
+          "seconds": 0.0037545999803114682,
+          "points_per_sec": 1415596.875265281
+        },
+        "realTraffic/TravelTime_387.csv": {
+          "n_points": 2500,
+          "seconds": 0.00208459998248145,
+          "points_per_sec": 1199270.8534056828
+        },
+        "realTraffic/TravelTime_451.csv": {
+          "n_points": 2162,
+          "seconds": 0.001716300001135096,
+          "points_per_sec": 1259686.5341549467
+        },
+        "realTraffic/occupancy_6005.csv": {
+          "n_points": 2380,
+          "seconds": 0.0016414000128861517,
+          "points_per_sec": 1449981.7115360764
+        },
+        "realTraffic/occupancy_t4013.csv": {
+          "n_points": 2500,
+          "seconds": 0.0017064999847207218,
+          "points_per_sec": 1464986.8282355354
+        },
+        "realTraffic/speed_6005.csv": {
+          "n_points": 2500,
+          "seconds": 0.0017139999836217612,
+          "points_per_sec": 1458576.443342423
+        },
+        "realTraffic/speed_7578.csv": {
+          "n_points": 1127,
+          "seconds": 0.0007701999857090414,
+          "points_per_sec": 1463256.3242162238
+        },
+        "realTraffic/speed_t4013.csv": {
+          "n_points": 2495,
+          "seconds": 0.0016660999972373247,
+          "points_per_sec": 1497509.1555951813
+        },
+        "realTweets/Twitter_volume_AAPL.csv": {
+          "n_points": 15902,
+          "seconds": 0.011195200000656769,
+          "points_per_sec": 1420430.1842813978
+        },
+        "realTweets/Twitter_volume_AMZN.csv": {
+          "n_points": 15831,
+          "seconds": 0.01083039998775348,
+          "points_per_sec": 1461718.867068711
+        },
+        "realTweets/Twitter_volume_CRM.csv": {
+          "n_points": 15902,
+          "seconds": 0.011084700003266335,
+          "points_per_sec": 1434590.0200559464
+        },
+        "realTweets/Twitter_volume_CVS.csv": {
+          "n_points": 15853,
+          "seconds": 0.011175599996931851,
+          "points_per_sec": 1418536.812730617
+        },
+        "realTweets/Twitter_volume_FB.csv": {
+          "n_points": 15833,
+          "seconds": 0.010705900000175461,
+          "points_per_sec": 1478904.1556282525
+        },
+        "realTweets/Twitter_volume_GOOG.csv": {
+          "n_points": 15842,
+          "seconds": 0.011338100011926144,
+          "points_per_sec": 1397235.8669738637
+        },
+        "realTweets/Twitter_volume_IBM.csv": {
+          "n_points": 15893,
+          "seconds": 0.012072300014551729,
+          "points_per_sec": 1316484.843885827
+        },
+        "realTweets/Twitter_volume_KO.csv": {
+          "n_points": 15851,
+          "seconds": 0.011223000008612871,
+          "points_per_sec": 1412367.4585971185
+        },
+        "realTweets/Twitter_volume_PFE.csv": {
+          "n_points": 15858,
+          "seconds": 0.010973500000545755,
+          "points_per_sec": 1445117.7836798942
+        },
+        "realTweets/Twitter_volume_UPS.csv": {
+          "n_points": 15866,
+          "seconds": 0.013105099991662428,
+          "points_per_sec": 1210673.7079529404
+        }
+      }
+    },
+    "ewma": {
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 0.3125763999996707,
+      "points_per_sec": 1169499.6807192902,
+      "us_per_point": 0.8550665010741679,
+      "mean_ms_per_stream": 5.38924827585639,
+      "per_stream": {
+        "artificialNoAnomaly/art_daily_no_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.0031131999858189374,
+          "points_per_sec": 1295130.418336864
+        },
+        "artificialNoAnomaly/art_daily_perfect_square_wave.csv": {
+          "n_points": 4032,
+          "seconds": 0.0032924000115599483,
+          "points_per_sec": 1224638.5572358284
+        },
+        "artificialNoAnomaly/art_daily_small_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.0032171999919228256,
+          "points_per_sec": 1253263.7107182734
+        },
+        "artificialNoAnomaly/art_flatline.csv": {
+          "n_points": 4032,
+          "seconds": 0.002891299984185025,
+          "points_per_sec": 1394528.420452541
+        },
+        "artificialNoAnomaly/art_noisy.csv": {
+          "n_points": 4032,
+          "seconds": 0.0033100000000558794,
+          "points_per_sec": 1218126.8881969582
+        },
+        "artificialWithAnomaly/art_daily_flatmiddle.csv": {
+          "n_points": 4032,
+          "seconds": 0.0030688999977428466,
+          "points_per_sec": 1313825.8017418315
+        },
+        "artificialWithAnomaly/art_daily_jumpsdown.csv": {
+          "n_points": 4032,
+          "seconds": 0.0036585000052582473,
+          "points_per_sec": 1102091.0193262082
+        },
+        "artificialWithAnomaly/art_daily_jumpsup.csv": {
+          "n_points": 4032,
+          "seconds": 0.003202299994882196,
+          "points_per_sec": 1259095.027462699
+        },
+        "artificialWithAnomaly/art_daily_nojump.csv": {
+          "n_points": 4032,
+          "seconds": 0.003252700000302866,
+          "points_per_sec": 1239585.5749452983
+        },
+        "artificialWithAnomaly/art_increase_spike_density.csv": {
+          "n_points": 4032,
+          "seconds": 0.003479700011666864,
+          "points_per_sec": 1158720.5754752895
+        },
+        "artificialWithAnomaly/art_load_balancer_spikes.csv": {
+          "n_points": 4032,
+          "seconds": 0.004150099994149059,
+          "points_per_sec": 971542.8557587625
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_24ae8d.csv": {
+          "n_points": 4032,
+          "seconds": 0.0047799999883864075,
+          "points_per_sec": 843514.646400886
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_53ea38.csv": {
+          "n_points": 4032,
+          "seconds": 0.0037653000035788864,
+          "points_per_sec": 1070831.0084635003
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_5f5533.csv": {
+          "n_points": 4032,
+          "seconds": 0.0031599999929312617,
+          "points_per_sec": 1275949.369942833
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_77c1ca.csv": {
+          "n_points": 4032,
+          "seconds": 0.002969699999084696,
+          "points_per_sec": 1357712.9007114253
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_825cc2.csv": {
+          "n_points": 4032,
+          "seconds": 0.003478700004052371,
+          "points_per_sec": 1159053.6681240362
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_ac20cd.csv": {
+          "n_points": 4032,
+          "seconds": 0.0029409000126179308,
+          "points_per_sec": 1371008.8689519211
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_c6585a.csv": {
+          "n_points": 4032,
+          "seconds": 0.0029950999887660146,
+          "points_per_sec": 1346198.7964085264
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_fe7f93.csv": {
+          "n_points": 4032,
+          "seconds": 0.003373899991856888,
+          "points_per_sec": 1195056.1693385923
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_1ef3de.csv": {
+          "n_points": 4730,
+          "seconds": 0.004870400007348508,
+          "points_per_sec": 971172.7974834365
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_c0d644.csv": {
+          "n_points": 4032,
+          "seconds": 0.0034266000147908926,
+          "points_per_sec": 1176676.5839595818
+        },
+        "realAWSCloudwatch/ec2_network_in_257a54.csv": {
+          "n_points": 4032,
+          "seconds": 0.0038148000021465123,
+          "points_per_sec": 1056936.1428466167
+        },
+        "realAWSCloudwatch/ec2_network_in_5abac7.csv": {
+          "n_points": 4730,
+          "seconds": 0.006327799987047911,
+          "points_per_sec": 747495.1815293821
+        },
+        "realAWSCloudwatch/elb_request_count_8c0756.csv": {
+          "n_points": 4032,
+          "seconds": 0.008329400006914511,
+          "points_per_sec": 484068.47992087103
+        },
+        "realAWSCloudwatch/grok_asg_anomaly.csv": {
+          "n_points": 4621,
+          "seconds": 0.007687500008614734,
+          "points_per_sec": 601105.690383302
+        },
+        "realAWSCloudwatch/iio_us-east-1_i-a2eb1cd9_NetworkIn.csv": {
+          "n_points": 1243,
+          "seconds": 0.0015425999881699681,
+          "points_per_sec": 805782.4514018099
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_cc0c53.csv": {
+          "n_points": 4032,
+          "seconds": 0.004466200014576316,
+          "points_per_sec": 902780.8846090145
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_e47b3b.csv": {
+          "n_points": 4032,
+          "seconds": 0.003153300000121817,
+          "points_per_sec": 1278660.4509067445
+        },
+        "realAdExchange/exchange-2_cpc_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.001268699998036027,
+          "points_per_sec": 1280050.447319291
+        },
+        "realAdExchange/exchange-2_cpm_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.001319899980444461,
+          "points_per_sec": 1230396.2603690142
+        },
+        "realAdExchange/exchange-3_cpc_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.0011325000086799264,
+          "points_per_sec": 1358057.3847348008
+        },
+        "realAdExchange/exchange-3_cpm_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.001123499998357147,
+          "points_per_sec": 1368936.361592311
+        },
+        "realAdExchange/exchange-4_cpc_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.0011955999943893403,
+          "points_per_sec": 1374205.4263216788
+        },
+        "realAdExchange/exchange-4_cpm_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.0012165000080130994,
+          "points_per_sec": 1350595.9631545749
+        },
+        "realKnownCause/ambient_temperature_system_failure.csv": {
+          "n_points": 7267,
+          "seconds": 0.00567310000769794,
+          "points_per_sec": 1280957.4994516694
+        },
+        "realKnownCause/cpu_utilization_asg_misconfiguration.csv": {
+          "n_points": 18050,
+          "seconds": 0.016269100015051663,
+          "points_per_sec": 1109465.181436017
+        },
+        "realKnownCause/ec2_request_latency_system_failure.csv": {
+          "n_points": 4032,
+          "seconds": 0.0034411000087857246,
+          "points_per_sec": 1171718.3428861718
+        },
+        "realKnownCause/machine_temperature_system_failure.csv": {
+          "n_points": 22695,
+          "seconds": 0.017690599983325228,
+          "points_per_sec": 1282884.6970363813
+        },
+        "realKnownCause/nyc_taxi.csv": {
+          "n_points": 10320,
+          "seconds": 0.008879100001649931,
+          "points_per_sec": 1162279.9605908615
+        },
+        "realKnownCause/rogue_agent_key_hold.csv": {
+          "n_points": 1882,
+          "seconds": 0.001408000010997057,
+          "points_per_sec": 1336647.716832961
+        },
+        "realKnownCause/rogue_agent_key_updown.csv": {
+          "n_points": 5315,
+          "seconds": 0.003974799998104572,
+          "points_per_sec": 1337174.198081543
+        },
+        "realTraffic/TravelTime_387.csv": {
+          "n_points": 2500,
+          "seconds": 0.0018063999887090176,
+          "points_per_sec": 1383968.1220252214
+        },
+        "realTraffic/TravelTime_451.csv": {
+          "n_points": 2162,
+          "seconds": 0.0016154999902937561,
+          "points_per_sec": 1338285.3686101667
+        },
+        "realTraffic/occupancy_6005.csv": {
+          "n_points": 2380,
+          "seconds": 0.001892600004794076,
+          "points_per_sec": 1257529.3215530533
+        },
+        "realTraffic/occupancy_t4013.csv": {
+          "n_points": 2500,
+          "seconds": 0.0018687999981921166,
+          "points_per_sec": 1337756.850609219
+        },
+        "realTraffic/speed_6005.csv": {
+          "n_points": 2500,
+          "seconds": 0.0024200000043492764,
+          "points_per_sec": 1033057.8493830354
+        },
+        "realTraffic/speed_7578.csv": {
+          "n_points": 1127,
+          "seconds": 0.0013494000013452023,
+          "points_per_sec": 835186.0077638252
+        },
+        "realTraffic/speed_t4013.csv": {
+          "n_points": 2495,
+          "seconds": 0.0023361999774351716,
+          "points_per_sec": 1067973.642709803
+        },
+        "realTweets/Twitter_volume_AAPL.csv": {
+          "n_points": 15902,
+          "seconds": 0.0119981000025291,
+          "points_per_sec": 1325376.5176692968
+        },
+        "realTweets/Twitter_volume_AMZN.csv": {
+          "n_points": 15831,
+          "seconds": 0.011776200000895187,
+          "points_per_sec": 1344321.5976967595
+        },
+        "realTweets/Twitter_volume_CRM.csv": {
+          "n_points": 15902,
+          "seconds": 0.013391400018008426,
+          "points_per_sec": 1187478.5294006139
+        },
+        "realTweets/Twitter_volume_CVS.csv": {
+          "n_points": 15853,
+          "seconds": 0.015118999988771975,
+          "points_per_sec": 1048548.1851824278
+        },
+        "realTweets/Twitter_volume_FB.csv": {
+          "n_points": 15833,
+          "seconds": 0.013288299989653751,
+          "points_per_sec": 1191499.289775784
+        },
+        "realTweets/Twitter_volume_GOOG.csv": {
+          "n_points": 15842,
+          "seconds": 0.011989500024355948,
+          "points_per_sec": 1321322.8214535995
+        },
+        "realTweets/Twitter_volume_IBM.csv": {
+          "n_points": 15893,
+          "seconds": 0.011800800013588741,
+          "points_per_sec": 1346773.0985779818
+        },
+        "realTweets/Twitter_volume_KO.csv": {
+          "n_points": 15851,
+          "seconds": 0.01258629999938421,
+          "points_per_sec": 1259385.204609418
+        },
+        "realTweets/Twitter_volume_PFE.csv": {
+          "n_points": 15858,
+          "seconds": 0.01224250000086613,
+          "points_per_sec": 1295323.667459921
+        },
+        "realTweets/Twitter_volume_UPS.csv": {
+          "n_points": 15866,
+          "seconds": 0.012784399994416162,
+          "points_per_sec": 1241043.7726392937
+        }
+      }
+    },
+    "zscore": {
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 0.3584011000348255,
+      "points_per_sec": 1019968.9676300633,
+      "us_per_point": 0.9804219851154277,
+      "mean_ms_per_stream": 6.179329310945268,
+      "per_stream": {
+        "artificialNoAnomaly/art_daily_no_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.003250500012654811,
+          "points_per_sec": 1240424.5452400127
+        },
+        "artificialNoAnomaly/art_daily_perfect_square_wave.csv": {
+          "n_points": 4032,
+          "seconds": 0.003017699986230582,
+          "points_per_sec": 1336116.916326193
+        },
+        "artificialNoAnomaly/art_daily_small_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.004251300008036196,
+          "points_per_sec": 948415.7769102027
+        },
+        "artificialNoAnomaly/art_flatline.csv": {
+          "n_points": 4032,
+          "seconds": 0.004288500000257045,
+          "points_per_sec": 940188.8771734474
+        },
+        "artificialNoAnomaly/art_noisy.csv": {
+          "n_points": 4032,
+          "seconds": 0.0031973000150173903,
+          "points_per_sec": 1261064.0168461232
+        },
+        "artificialWithAnomaly/art_daily_flatmiddle.csv": {
+          "n_points": 4032,
+          "seconds": 0.00308470000163652,
+          "points_per_sec": 1307096.3133727463
+        },
+        "artificialWithAnomaly/art_daily_jumpsdown.csv": {
+          "n_points": 4032,
+          "seconds": 0.004026300011901185,
+          "points_per_sec": 1001415.6888661964
+        },
+        "artificialWithAnomaly/art_daily_jumpsup.csv": {
+          "n_points": 4032,
+          "seconds": 0.006353400007355958,
+          "points_per_sec": 634620.8322050801
+        },
+        "artificialWithAnomaly/art_daily_nojump.csv": {
+          "n_points": 4032,
+          "seconds": 0.0066396000038366765,
+          "points_per_sec": 607265.4975706547
+        },
+        "artificialWithAnomaly/art_increase_spike_density.csv": {
+          "n_points": 4032,
+          "seconds": 0.005567299987887964,
+          "points_per_sec": 724228.9815120234
+        },
+        "artificialWithAnomaly/art_load_balancer_spikes.csv": {
+          "n_points": 4032,
+          "seconds": 0.003980499983299524,
+          "points_per_sec": 1012938.0773562489
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_24ae8d.csv": {
+          "n_points": 4032,
+          "seconds": 0.003125599992927164,
+          "points_per_sec": 1289992.3243933658
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_53ea38.csv": {
+          "n_points": 4032,
+          "seconds": 0.0031235000060405582,
+          "points_per_sec": 1290859.6101176525
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_5f5533.csv": {
+          "n_points": 4032,
+          "seconds": 0.0031644999980926514,
+          "points_per_sec": 1274134.935196783
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_77c1ca.csv": {
+          "n_points": 4032,
+          "seconds": 0.0034340999845881015,
+          "points_per_sec": 1174106.7581302857
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_825cc2.csv": {
+          "n_points": 4032,
+          "seconds": 0.003167900023981929,
+          "points_per_sec": 1272767.4388322176
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_ac20cd.csv": {
+          "n_points": 4032,
+          "seconds": 0.003276000003097579,
+          "points_per_sec": 1230769.2296054931
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_c6585a.csv": {
+          "n_points": 4032,
+          "seconds": 0.004518300003837794,
+          "points_per_sec": 892371.0237423951
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_fe7f93.csv": {
+          "n_points": 4032,
+          "seconds": 0.004656500008422881,
+          "points_per_sec": 865886.3937950697
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_1ef3de.csv": {
+          "n_points": 4730,
+          "seconds": 0.004581399989547208,
+          "points_per_sec": 1032435.5024210577
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_c0d644.csv": {
+          "n_points": 4032,
+          "seconds": 0.0032177999964915216,
+          "points_per_sec": 1253030.02187713
+        },
+        "realAWSCloudwatch/ec2_network_in_257a54.csv": {
+          "n_points": 4032,
+          "seconds": 0.0032146000012289733,
+          "points_per_sec": 1254277.3590675439
+        },
+        "realAWSCloudwatch/ec2_network_in_5abac7.csv": {
+          "n_points": 4730,
+          "seconds": 0.0038459000061266124,
+          "points_per_sec": 1229881.1701981318
+        },
+        "realAWSCloudwatch/elb_request_count_8c0756.csv": {
+          "n_points": 4032,
+          "seconds": 0.0034174000029452145,
+          "points_per_sec": 1179844.3250790383
+        },
+        "realAWSCloudwatch/grok_asg_anomaly.csv": {
+          "n_points": 4621,
+          "seconds": 0.003715099999681115,
+          "points_per_sec": 1243842.696131098
+        },
+        "realAWSCloudwatch/iio_us-east-1_i-a2eb1cd9_NetworkIn.csv": {
+          "n_points": 1243,
+          "seconds": 0.0009428000194020569,
+          "points_per_sec": 1318413.2100340177
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_cc0c53.csv": {
+          "n_points": 4032,
+          "seconds": 0.003116600011708215,
+          "points_per_sec": 1293717.5078139247
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_e47b3b.csv": {
+          "n_points": 4032,
+          "seconds": 0.0031003000040072948,
+          "points_per_sec": 1300519.3029024403
+        },
+        "realAdExchange/exchange-2_cpc_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.0017185999895446002,
+          "points_per_sec": 944955.2018386386
+        },
+        "realAdExchange/exchange-2_cpm_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.0014285000215750188,
+          "points_per_sec": 1136856.8256718884
+        },
+        "realAdExchange/exchange-3_cpc_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.0012110999959986657,
+          "points_per_sec": 1269919.911717756
+        },
+        "realAdExchange/exchange-3_cpm_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.0011916999937966466,
+          "points_per_sec": 1290593.2768364574
+        },
+        "realAdExchange/exchange-4_cpc_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.0012541000032797456,
+          "points_per_sec": 1310102.8591844318
+        },
+        "realAdExchange/exchange-4_cpm_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.0014157999830786139,
+          "points_per_sec": 1160474.657180986
+        },
+        "realKnownCause/ambient_temperature_system_failure.csv": {
+          "n_points": 7267,
+          "seconds": 0.008041499997489154,
+          "points_per_sec": 903687.123331346
+        },
+        "realKnownCause/cpu_utilization_asg_misconfiguration.csv": {
+          "n_points": 18050,
+          "seconds": 0.015351799986092374,
+          "points_per_sec": 1175757.892647898
+        },
+        "realKnownCause/ec2_request_latency_system_failure.csv": {
+          "n_points": 4032,
+          "seconds": 0.004399199999170378,
+          "points_per_sec": 916530.2784052496
+        },
+        "realKnownCause/machine_temperature_system_failure.csv": {
+          "n_points": 22695,
+          "seconds": 0.020316200010711327,
+          "points_per_sec": 1117088.8250772534
+        },
+        "realKnownCause/nyc_taxi.csv": {
+          "n_points": 10320,
+          "seconds": 0.017771100014215335,
+          "points_per_sec": 580718.1317839018
+        },
+        "realKnownCause/rogue_agent_key_hold.csv": {
+          "n_points": 1882,
+          "seconds": 0.003239900019252673,
+          "points_per_sec": 580882.1225397285
+        },
+        "realKnownCause/rogue_agent_key_updown.csv": {
+          "n_points": 5315,
+          "seconds": 0.007009299995843321,
+          "points_per_sec": 758278.2878678213
+        },
+        "realTraffic/TravelTime_387.csv": {
+          "n_points": 2500,
+          "seconds": 0.0019554999889805913,
+          "points_per_sec": 1278445.4175851254
+        },
+        "realTraffic/TravelTime_451.csv": {
+          "n_points": 2162,
+          "seconds": 0.0016826999781187624,
+          "points_per_sec": 1284839.8574397613
+        },
+        "realTraffic/occupancy_6005.csv": {
+          "n_points": 2380,
+          "seconds": 0.0018320000090170652,
+          "points_per_sec": 1299126.6311603114
+        },
+        "realTraffic/occupancy_t4013.csv": {
+          "n_points": 2500,
+          "seconds": 0.002041800005827099,
+          "points_per_sec": 1224409.8309654435
+        },
+        "realTraffic/speed_6005.csv": {
+          "n_points": 2500,
+          "seconds": 0.002261100016767159,
+          "points_per_sec": 1105656.5306537885
+        },
+        "realTraffic/speed_7578.csv": {
+          "n_points": 1127,
+          "seconds": 0.0008476999937556684,
+          "points_per_sec": 1329479.778579347
+        },
+        "realTraffic/speed_t4013.csv": {
+          "n_points": 2495,
+          "seconds": 0.0021908000053372234,
+          "points_per_sec": 1138853.3841161607
+        },
+        "realTweets/Twitter_volume_AAPL.csv": {
+          "n_points": 15902,
+          "seconds": 0.013443899981211871,
+          "points_per_sec": 1182841.2902672123
+        },
+        "realTweets/Twitter_volume_AMZN.csv": {
+          "n_points": 15831,
+          "seconds": 0.01711239997530356,
+          "points_per_sec": 925118.6287631856
+        },
+        "realTweets/Twitter_volume_CRM.csv": {
+          "n_points": 15902,
+          "seconds": 0.014424199995119125,
+          "points_per_sec": 1102452.822713283
+        },
+        "realTweets/Twitter_volume_CVS.csv": {
+          "n_points": 15853,
+          "seconds": 0.01361009999527596,
+          "points_per_sec": 1164796.7322431537
+        },
+        "realTweets/Twitter_volume_FB.csv": {
+          "n_points": 15833,
+          "seconds": 0.01305010000942275,
+          "points_per_sec": 1213247.4071898202
+        },
+        "realTweets/Twitter_volume_GOOG.csv": {
+          "n_points": 15842,
+          "seconds": 0.012622900016140193,
+          "points_per_sec": 1255020.6354913472
+        },
+        "realTweets/Twitter_volume_IBM.csv": {
+          "n_points": 15893,
+          "seconds": 0.01627379999263212,
+          "points_per_sec": 976600.4256655159
+        },
+        "realTweets/Twitter_volume_KO.csv": {
+          "n_points": 15851,
+          "seconds": 0.013169799989555031,
+          "points_per_sec": 1203586.9954419527
+        },
+        "realTweets/Twitter_volume_PFE.csv": {
+          "n_points": 15858,
+          "seconds": 0.02587599999969825,
+          "points_per_sec": 612845.8803595967
+        },
+        "realTweets/Twitter_volume_UPS.csv": {
+          "n_points": 15866,
+          "seconds": 0.0163821000023745,
+          "points_per_sec": 968496.102312909
+        }
+      }
+    },
+    "threshold": {
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 0.04879040000378154,
+      "points_per_sec": 7492416.540378171,
+      "us_per_point": 0.13346828684854808,
+      "mean_ms_per_stream": 0.8412137931686472,
+      "per_stream": {
+        "artificialNoAnomaly/art_daily_no_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.0006299999949987978,
+          "points_per_sec": 6400000.050805864
+        },
+        "artificialNoAnomaly/art_daily_perfect_square_wave.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005409000150393695,
+          "points_per_sec": 7454242.721192253
+        },
+        "artificialNoAnomaly/art_daily_small_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005432000034488738,
+          "points_per_sec": 7422680.365243211
+        },
+        "artificialNoAnomaly/art_flatline.csv": {
+          "n_points": 4032,
+          "seconds": 0.0006218999915290624,
+          "points_per_sec": 6483357.5412769215
+        },
+        "artificialNoAnomaly/art_noisy.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005484999855980277,
+          "points_per_sec": 7350957.348893863
+        },
+        "artificialWithAnomaly/art_daily_flatmiddle.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005362999800127,
+          "points_per_sec": 7518180.403259607
+        },
+        "artificialWithAnomaly/art_daily_jumpsdown.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005400999798439443,
+          "points_per_sec": 7465284.485226235
+        },
+        "artificialWithAnomaly/art_daily_jumpsup.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005322000070009381,
+          "points_per_sec": 7576099.111161592
+        },
+        "artificialWithAnomaly/art_daily_nojump.csv": {
+          "n_points": 4032,
+          "seconds": 0.0006222000229172409,
+          "points_per_sec": 6480231.1981532965
+        },
+        "artificialWithAnomaly/art_increase_spike_density.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005531999922823161,
+          "points_per_sec": 7288503.3554778835
+        },
+        "artificialWithAnomaly/art_load_balancer_spikes.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005520999839063734,
+          "points_per_sec": 7303025.027227238
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_24ae8d.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005563999875448644,
+          "points_per_sec": 7246585.352726821
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_53ea38.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005292999849189073,
+          "points_per_sec": 7617608.378767917
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_5f5533.csv": {
+          "n_points": 4032,
+          "seconds": 0.000520800007507205,
+          "points_per_sec": 7741935.372272857
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_77c1ca.csv": {
+          "n_points": 4032,
+          "seconds": 0.00051860001985915,
+          "points_per_sec": 7774777.951406707
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_825cc2.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005291000124998391,
+          "points_per_sec": 7620487.440455742
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_ac20cd.csv": {
+          "n_points": 4032,
+          "seconds": 0.0004995999915990978,
+          "points_per_sec": 8070456.50079887
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_c6585a.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005238000012468547,
+          "points_per_sec": 7697594.483394843
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_fe7f93.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005358000053092837,
+          "points_per_sec": 7525195.8940772675
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_1ef3de.csv": {
+          "n_points": 4730,
+          "seconds": 0.0006244000105652958,
+          "points_per_sec": 7575272.133191879
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_c0d644.csv": {
+          "n_points": 4032,
+          "seconds": 0.000535300001502037,
+          "points_per_sec": 7532224.899470053
+        },
+        "realAWSCloudwatch/ec2_network_in_257a54.csv": {
+          "n_points": 4032,
+          "seconds": 0.000530699995579198,
+          "points_per_sec": 7597512.782338609
+        },
+        "realAWSCloudwatch/ec2_network_in_5abac7.csv": {
+          "n_points": 4730,
+          "seconds": 0.000631699978839606,
+          "points_per_sec": 7487731.768946262
+        },
+        "realAWSCloudwatch/elb_request_count_8c0756.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005419999943114817,
+          "points_per_sec": 7439114.469220551
+        },
+        "realAWSCloudwatch/grok_asg_anomaly.csv": {
+          "n_points": 4621,
+          "seconds": 0.000588800001423806,
+          "points_per_sec": 7848165.741891533
+        },
+        "realAWSCloudwatch/iio_us-east-1_i-a2eb1cd9_NetworkIn.csv": {
+          "n_points": 1243,
+          "seconds": 0.0001671000209171325,
+          "points_per_sec": 7438658.554186675
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_cc0c53.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005197000282350928,
+          "points_per_sec": 7758321.6874024775
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_e47b3b.csv": {
+          "n_points": 4032,
+          "seconds": 0.0005206000059843063,
+          "points_per_sec": 7744909.630526485
+        },
+        "realAdExchange/exchange-2_cpc_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.00021669999114237726,
+          "points_per_sec": 7494231.962995291
+        },
+        "realAdExchange/exchange-2_cpm_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.00021299999207258224,
+          "points_per_sec": 7624413.429304743
+        },
+        "realAdExchange/exchange-3_cpc_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.00020409998251125216,
+          "points_per_sec": 7535522.448735188
+        },
+        "realAdExchange/exchange-3_cpm_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.00021440000273287296,
+          "points_per_sec": 7173507.371248674
+        },
+        "realAdExchange/exchange-4_cpc_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.0002214000269304961,
+          "points_per_sec": 7420956.640243704
+        },
+        "realAdExchange/exchange-4_cpm_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.000219000008655712,
+          "points_per_sec": 7502282.808504112
+        },
+        "realKnownCause/ambient_temperature_system_failure.csv": {
+          "n_points": 7267,
+          "seconds": 0.0009179999760817736,
+          "points_per_sec": 7916122.21060959
+        },
+        "realKnownCause/cpu_utilization_asg_misconfiguration.csv": {
+          "n_points": 18050,
+          "seconds": 0.0025698000099509954,
+          "points_per_sec": 7023892.882755574
+        },
+        "realKnownCause/ec2_request_latency_system_failure.csv": {
+          "n_points": 4032,
+          "seconds": 0.000535300001502037,
+          "points_per_sec": 7532224.899470053
+        },
+        "realKnownCause/machine_temperature_system_failure.csv": {
+          "n_points": 22695,
+          "seconds": 0.00297510001109913,
+          "points_per_sec": 7628314.986162596
+        },
+        "realKnownCause/nyc_taxi.csv": {
+          "n_points": 10320,
+          "seconds": 0.0013388999796006829,
+          "points_per_sec": 7707819.969552815
+        },
+        "realKnownCause/rogue_agent_key_hold.csv": {
+          "n_points": 1882,
+          "seconds": 0.0002555999963078648,
+          "points_per_sec": 7363067.39900407
+        },
+        "realKnownCause/rogue_agent_key_updown.csv": {
+          "n_points": 5315,
+          "seconds": 0.0008685000066179782,
+          "points_per_sec": 6119746.6430623485
+        },
+        "realTraffic/TravelTime_387.csv": {
+          "n_points": 2500,
+          "seconds": 0.0003426999901421368,
+          "points_per_sec": 7295010.4228573525
+        },
+        "realTraffic/TravelTime_451.csv": {
+          "n_points": 2162,
+          "seconds": 0.0002874000056181103,
+          "points_per_sec": 7522616.415230032
+        },
+        "realTraffic/occupancy_6005.csv": {
+          "n_points": 2380,
+          "seconds": 0.0003169999981764704,
+          "points_per_sec": 7507886.478520041
+        },
+        "realTraffic/occupancy_t4013.csv": {
+          "n_points": 2500,
+          "seconds": 0.0003732999903149903,
+          "points_per_sec": 6697026.693974735
+        },
+        "realTraffic/speed_6005.csv": {
+          "n_points": 2500,
+          "seconds": 0.0003394999948795885,
+          "points_per_sec": 7363770.361430146
+        },
+        "realTraffic/speed_7578.csv": {
+          "n_points": 1127,
+          "seconds": 0.00015799998072907329,
+          "points_per_sec": 7132912.262391326
+        },
+        "realTraffic/speed_t4013.csv": {
+          "n_points": 2495,
+          "seconds": 0.0003344999859109521,
+          "points_per_sec": 7458894.185616495
+        },
+        "realTweets/Twitter_volume_AAPL.csv": {
+          "n_points": 15902,
+          "seconds": 0.0020517999946605414,
+          "points_per_sec": 7750268.077484275
+        },
+        "realTweets/Twitter_volume_AMZN.csv": {
+          "n_points": 15831,
+          "seconds": 0.0021062000014353544,
+          "points_per_sec": 7516380.205683853
+        },
+        "realTweets/Twitter_volume_CRM.csv": {
+          "n_points": 15902,
+          "seconds": 0.0021458000119309872,
+          "points_per_sec": 7410755.854032233
+        },
+        "realTweets/Twitter_volume_CVS.csv": {
+          "n_points": 15853,
+          "seconds": 0.00203130001318641,
+          "points_per_sec": 7804361.688125086
+        },
+        "realTweets/Twitter_volume_FB.csv": {
+          "n_points": 15833,
+          "seconds": 0.002119600016158074,
+          "points_per_sec": 7469805.566758977
+        },
+        "realTweets/Twitter_volume_GOOG.csv": {
+          "n_points": 15842,
+          "seconds": 0.0020721000037156045,
+          "points_per_sec": 7645383.896333563
+        },
+        "realTweets/Twitter_volume_IBM.csv": {
+          "n_points": 15893,
+          "seconds": 0.00206389999948442,
+          "points_per_sec": 7700469.985934498
+        },
+        "realTweets/Twitter_volume_KO.csv": {
+          "n_points": 15851,
+          "seconds": 0.002054600015981123,
+          "points_per_sec": 7714883.615646596
+        },
+        "realTweets/Twitter_volume_PFE.csv": {
+          "n_points": 15858,
+          "seconds": 0.0021277000196278095,
+          "points_per_sec": 7453118.3219963405
+        },
+        "realTweets/Twitter_volume_UPS.csv": {
+          "n_points": 15866,
+          "seconds": 0.00202089999220334,
+          "points_per_sec": 7850957.524474861
+        }
+      }
+    },
+    "iforest": {
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 40.77940800008946,
+      "points_per_sec": 8964.279226397746,
+      "us_per_point": 111.55386559749604,
+      "mean_ms_per_stream": 703.0932413808529,
+      "per_stream": {
+        "artificialNoAnomaly/art_daily_no_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.4093581000051927,
+          "points_per_sec": 9849.566919401019
+        },
+        "artificialNoAnomaly/art_daily_perfect_square_wave.csv": {
+          "n_points": 4032,
+          "seconds": 0.2540746000013314,
+          "points_per_sec": 15869.354905916889
+        },
+        "artificialNoAnomaly/art_daily_small_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.4217615000088699,
+          "points_per_sec": 9559.905301729068
+        },
+        "artificialNoAnomaly/art_flatline.csv": {
+          "n_points": 4032,
+          "seconds": 0.1314557000005152,
+          "points_per_sec": 30671.929783069107
+        },
+        "artificialNoAnomaly/art_noisy.csv": {
+          "n_points": 4032,
+          "seconds": 0.4602821000153199,
+          "points_per_sec": 8759.845320654009
+        },
+        "artificialWithAnomaly/art_daily_flatmiddle.csv": {
+          "n_points": 4032,
+          "seconds": 0.41641199999139644,
+          "points_per_sec": 9682.718077488895
+        },
+        "artificialWithAnomaly/art_daily_jumpsdown.csv": {
+          "n_points": 4032,
+          "seconds": 0.47330569999758154,
+          "points_per_sec": 8518.807189561847
+        },
+        "artificialWithAnomaly/art_daily_jumpsup.csv": {
+          "n_points": 4032,
+          "seconds": 0.43399930000305176,
+          "points_per_sec": 9290.337564995261
+        },
+        "artificialWithAnomaly/art_daily_nojump.csv": {
+          "n_points": 4032,
+          "seconds": 0.43995949998497963,
+          "points_per_sec": 9164.479912668448
+        },
+        "artificialWithAnomaly/art_increase_spike_density.csv": {
+          "n_points": 4032,
+          "seconds": 0.33677919997717254,
+          "points_per_sec": 11972.235815849957
+        },
+        "artificialWithAnomaly/art_load_balancer_spikes.csv": {
+          "n_points": 4032,
+          "seconds": 0.40369389997795224,
+          "points_per_sec": 9987.76548325404
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_24ae8d.csv": {
+          "n_points": 4032,
+          "seconds": 0.4795952000131365,
+          "points_per_sec": 8407.089978985528
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_53ea38.csv": {
+          "n_points": 4032,
+          "seconds": 0.4420813999895472,
+          "points_per_sec": 9120.4922896447
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_5f5533.csv": {
+          "n_points": 4032,
+          "seconds": 0.434713800001191,
+          "points_per_sec": 9275.06787221605
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_77c1ca.csv": {
+          "n_points": 4032,
+          "seconds": 0.4793771000113338,
+          "points_per_sec": 8410.914914176485
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_825cc2.csv": {
+          "n_points": 4032,
+          "seconds": 0.5305331000126898,
+          "points_per_sec": 7599.902814553057
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_ac20cd.csv": {
+          "n_points": 4032,
+          "seconds": 0.40524019999429584,
+          "points_per_sec": 9949.654550700436
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_c6585a.csv": {
+          "n_points": 4032,
+          "seconds": 0.4460841999971308,
+          "points_per_sec": 9038.652344167163
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_fe7f93.csv": {
+          "n_points": 4032,
+          "seconds": 0.3706645999918692,
+          "points_per_sec": 10877.758491338112
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_1ef3de.csv": {
+          "n_points": 4730,
+          "seconds": 0.37603389998548664,
+          "points_per_sec": 12578.653148512829
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_c0d644.csv": {
+          "n_points": 4032,
+          "seconds": 0.32762779999757186,
+          "points_per_sec": 12306.647970745713
+        },
+        "realAWSCloudwatch/ec2_network_in_257a54.csv": {
+          "n_points": 4032,
+          "seconds": 0.4153404999815393,
+          "points_per_sec": 9707.697660544085
+        },
+        "realAWSCloudwatch/ec2_network_in_5abac7.csv": {
+          "n_points": 4730,
+          "seconds": 0.4331749000120908,
+          "points_per_sec": 10919.376907267655
+        },
+        "realAWSCloudwatch/elb_request_count_8c0756.csv": {
+          "n_points": 4032,
+          "seconds": 0.5063697000150569,
+          "points_per_sec": 7962.561740720483
+        },
+        "realAWSCloudwatch/grok_asg_anomaly.csv": {
+          "n_points": 4621,
+          "seconds": 0.5752018999774009,
+          "points_per_sec": 8033.700862569394
+        },
+        "realAWSCloudwatch/iio_us-east-1_i-a2eb1cd9_NetworkIn.csv": {
+          "n_points": 1243,
+          "seconds": 0.10844589999760501,
+          "points_per_sec": 11461.936320575063
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_cc0c53.csv": {
+          "n_points": 4032,
+          "seconds": 0.40947110002161935,
+          "points_per_sec": 9846.848775865055
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_e47b3b.csv": {
+          "n_points": 4032,
+          "seconds": 0.4116280000016559,
+          "points_per_sec": 9795.252023632454
+        },
+        "realAdExchange/exchange-2_cpc_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.16023930002120323,
+          "points_per_sec": 10134.842075477793
+        },
+        "realAdExchange/exchange-2_cpm_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.15875110001070425,
+          "points_per_sec": 10229.850375150138
+        },
+        "realAdExchange/exchange-3_cpc_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.1490720000001602,
+          "points_per_sec": 10317.162176655222
+        },
+        "realAdExchange/exchange-3_cpm_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.13075479998951778,
+          "points_per_sec": 11762.47449518715
+        },
+        "realAdExchange/exchange-4_cpc_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.1402900000102818,
+          "points_per_sec": 11711.454842680057
+        },
+        "realAdExchange/exchange-4_cpm_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.16459810000378639,
+          "points_per_sec": 9981.889219633791
+        },
+        "realKnownCause/ambient_temperature_system_failure.csv": {
+          "n_points": 7267,
+          "seconds": 0.825932500010822,
+          "points_per_sec": 8798.53983213493
+        },
+        "realKnownCause/cpu_utilization_asg_misconfiguration.csv": {
+          "n_points": 18050,
+          "seconds": 2.0315012000210118,
+          "points_per_sec": 8885.055051807652
+        },
+        "realKnownCause/ec2_request_latency_system_failure.csv": {
+          "n_points": 4032,
+          "seconds": 0.4747630000056233,
+          "points_per_sec": 8492.658442111628
+        },
+        "realKnownCause/machine_temperature_system_failure.csv": {
+          "n_points": 22695,
+          "seconds": 2.4498849000083283,
+          "points_per_sec": 9263.700510959861
+        },
+        "realKnownCause/nyc_taxi.csv": {
+          "n_points": 10320,
+          "seconds": 1.2134095999936108,
+          "points_per_sec": 8504.959908059356
+        },
+        "realKnownCause/rogue_agent_key_hold.csv": {
+          "n_points": 1882,
+          "seconds": 0.1635917000239715,
+          "points_per_sec": 11504.251130859486
+        },
+        "realKnownCause/rogue_agent_key_updown.csv": {
+          "n_points": 5315,
+          "seconds": 0.41592149998177774,
+          "points_per_sec": 12778.853702520451
+        },
+        "realTraffic/TravelTime_387.csv": {
+          "n_points": 2500,
+          "seconds": 0.2403597000229638,
+          "points_per_sec": 10401.078049944112
+        },
+        "realTraffic/TravelTime_451.csv": {
+          "n_points": 2162,
+          "seconds": 0.22259260001010261,
+          "points_per_sec": 9712.811656370764
+        },
+        "realTraffic/occupancy_6005.csv": {
+          "n_points": 2380,
+          "seconds": 0.2701625000045169,
+          "points_per_sec": 8809.512793079011
+        },
+        "realTraffic/occupancy_t4013.csv": {
+          "n_points": 2500,
+          "seconds": 0.2774294000118971,
+          "points_per_sec": 9011.30161364582
+        },
+        "realTraffic/speed_6005.csv": {
+          "n_points": 2500,
+          "seconds": 0.26797179999994114,
+          "points_per_sec": 9329.339878302677
+        },
+        "realTraffic/speed_7578.csv": {
+          "n_points": 1127,
+          "seconds": 0.10960039999918081,
+          "points_per_sec": 10282.809186904642
+        },
+        "realTraffic/speed_t4013.csv": {
+          "n_points": 2495,
+          "seconds": 0.2488584999809973,
+          "points_per_sec": 10025.77770174825
+        },
+        "realTweets/Twitter_volume_AAPL.csv": {
+          "n_points": 15902,
+          "seconds": 1.8012682999833487,
+          "points_per_sec": 8828.223979818555
+        },
+        "realTweets/Twitter_volume_AMZN.csv": {
+          "n_points": 15831,
+          "seconds": 2.785364600014873,
+          "points_per_sec": 5683.636533585394
+        },
+        "realTweets/Twitter_volume_CRM.csv": {
+          "n_points": 15902,
+          "seconds": 2.6752937999845017,
+          "points_per_sec": 5944.020054953263
+        },
+        "realTweets/Twitter_volume_CVS.csv": {
+          "n_points": 15853,
+          "seconds": 1.9210747000179254,
+          "points_per_sec": 8252.151777258883
+        },
+        "realTweets/Twitter_volume_FB.csv": {
+          "n_points": 15833,
+          "seconds": 1.6511832000105642,
+          "points_per_sec": 9588.88147596142
+        },
+        "realTweets/Twitter_volume_GOOG.csv": {
+          "n_points": 15842,
+          "seconds": 1.7070063000137452,
+          "points_per_sec": 9280.575004247165
+        },
+        "realTweets/Twitter_volume_IBM.csv": {
+          "n_points": 15893,
+          "seconds": 1.7639620999980252,
+          "points_per_sec": 9009.83076678223
+        },
+        "realTweets/Twitter_volume_KO.csv": {
+          "n_points": 15851,
+          "seconds": 1.6457965000008699,
+          "points_per_sec": 9631.202885649363
+        },
+        "realTweets/Twitter_volume_PFE.csv": {
+          "n_points": 15858,
+          "seconds": 1.7741036000079475,
+          "points_per_sec": 8938.598625203715
+        },
+        "realTweets/Twitter_volume_UPS.csv": {
+          "n_points": 15866,
+          "seconds": 1.6060053999826778,
+          "points_per_sec": 9879.169771266728
+        }
+      }
+    },
+    "hybrid": {
+      "n_streams": 58,
+      "total_points": 365558,
+      "total_seconds": 39.50192139993305,
+      "points_per_sec": 9254.182759844678,
+      "us_per_point": 108.05924477082448,
+      "mean_ms_per_stream": 681.0676103436733,
+      "per_stream": {
+        "artificialNoAnomaly/art_daily_no_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.4552247000101488,
+          "points_per_sec": 8857.164384775497
+        },
+        "artificialNoAnomaly/art_daily_perfect_square_wave.csv": {
+          "n_points": 4032,
+          "seconds": 0.28872000001138076,
+          "points_per_sec": 13965.087281245036
+        },
+        "artificialNoAnomaly/art_daily_small_noise.csv": {
+          "n_points": 4032,
+          "seconds": 0.4395879000076093,
+          "points_per_sec": 9172.226987890717
+        },
+        "artificialNoAnomaly/art_flatline.csv": {
+          "n_points": 4032,
+          "seconds": 0.15796209999825805,
+          "points_per_sec": 25525.110137459957
+        },
+        "artificialNoAnomaly/art_noisy.csv": {
+          "n_points": 4032,
+          "seconds": 0.4706148999975994,
+          "points_per_sec": 8567.514543250898
+        },
+        "artificialWithAnomaly/art_daily_flatmiddle.csv": {
+          "n_points": 4032,
+          "seconds": 0.4909811000106856,
+          "points_per_sec": 8212.128735530245
+        },
+        "artificialWithAnomaly/art_daily_jumpsdown.csv": {
+          "n_points": 4032,
+          "seconds": 0.45383750001201406,
+          "points_per_sec": 8884.23719920294
+        },
+        "artificialWithAnomaly/art_daily_jumpsup.csv": {
+          "n_points": 4032,
+          "seconds": 0.44386410000151955,
+          "points_per_sec": 9083.861479191934
+        },
+        "artificialWithAnomaly/art_daily_nojump.csv": {
+          "n_points": 4032,
+          "seconds": 0.4680127000028733,
+          "points_per_sec": 8615.150828119078
+        },
+        "artificialWithAnomaly/art_increase_spike_density.csv": {
+          "n_points": 4032,
+          "seconds": 0.33855980000225827,
+          "points_per_sec": 11909.269795094118
+        },
+        "artificialWithAnomaly/art_load_balancer_spikes.csv": {
+          "n_points": 4032,
+          "seconds": 0.41560799998114817,
+          "points_per_sec": 9701.44944318418
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_24ae8d.csv": {
+          "n_points": 4032,
+          "seconds": 0.4334927999880165,
+          "points_per_sec": 9301.192546015669
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_53ea38.csv": {
+          "n_points": 4032,
+          "seconds": 0.4980859999777749,
+          "points_per_sec": 8094.987612942166
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_5f5533.csv": {
+          "n_points": 4032,
+          "seconds": 0.4656531999935396,
+          "points_per_sec": 8658.804449439926
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_77c1ca.csv": {
+          "n_points": 4032,
+          "seconds": 0.47740540001541376,
+          "points_per_sec": 8445.652269265955
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_825cc2.csv": {
+          "n_points": 4032,
+          "seconds": 0.520873900008155,
+          "points_per_sec": 7740.837081560188
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_ac20cd.csv": {
+          "n_points": 4032,
+          "seconds": 0.6667563999944832,
+          "points_per_sec": 6047.186048807872
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_c6585a.csv": {
+          "n_points": 4032,
+          "seconds": 0.44674009998561814,
+          "points_per_sec": 9025.381872211163
+        },
+        "realAWSCloudwatch/ec2_cpu_utilization_fe7f93.csv": {
+          "n_points": 4032,
+          "seconds": 0.3717231999908108,
+          "points_per_sec": 10846.780615521639
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_1ef3de.csv": {
+          "n_points": 4730,
+          "seconds": 0.40125570000964217,
+          "points_per_sec": 11787.99453786286
+        },
+        "realAWSCloudwatch/ec2_disk_write_bytes_c0d644.csv": {
+          "n_points": 4032,
+          "seconds": 0.3498599999875296,
+          "points_per_sec": 11524.609844348359
+        },
+        "realAWSCloudwatch/ec2_network_in_257a54.csv": {
+          "n_points": 4032,
+          "seconds": 0.4121609999856446,
+          "points_per_sec": 9782.584961072089
+        },
+        "realAWSCloudwatch/ec2_network_in_5abac7.csv": {
+          "n_points": 4730,
+          "seconds": 0.42034710000734776,
+          "points_per_sec": 11252.605287195554
+        },
+        "realAWSCloudwatch/elb_request_count_8c0756.csv": {
+          "n_points": 4032,
+          "seconds": 0.42532710000523366,
+          "points_per_sec": 9479.762751892335
+        },
+        "realAWSCloudwatch/grok_asg_anomaly.csv": {
+          "n_points": 4621,
+          "seconds": 0.49810040000011213,
+          "points_per_sec": 9277.246113432071
+        },
+        "realAWSCloudwatch/iio_us-east-1_i-a2eb1cd9_NetworkIn.csv": {
+          "n_points": 1243,
+          "seconds": 0.11405179998837411,
+          "points_per_sec": 10898.556621874493
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_cc0c53.csv": {
+          "n_points": 4032,
+          "seconds": 0.41901299997698516,
+          "points_per_sec": 9622.613141409605
+        },
+        "realAWSCloudwatch/rds_cpu_utilization_e47b3b.csv": {
+          "n_points": 4032,
+          "seconds": 0.39277320000110194,
+          "points_per_sec": 10265.466177398785
+        },
+        "realAdExchange/exchange-2_cpc_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.16066599998157471,
+          "points_per_sec": 10107.925760187229
+        },
+        "realAdExchange/exchange-2_cpm_results.csv": {
+          "n_points": 1624,
+          "seconds": 0.16117330000270158,
+          "points_per_sec": 10076.110621131284
+        },
+        "realAdExchange/exchange-3_cpc_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.15194419998442754,
+          "points_per_sec": 10122.13694341493
+        },
+        "realAdExchange/exchange-3_cpm_results.csv": {
+          "n_points": 1538,
+          "seconds": 0.170816099998774,
+          "points_per_sec": 9003.83511865122
+        },
+        "realAdExchange/exchange-4_cpc_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.16979250000440516,
+          "points_per_sec": 9676.516924819256
+        },
+        "realAdExchange/exchange-4_cpm_results.csv": {
+          "n_points": 1643,
+          "seconds": 0.14186000000336207,
+          "points_per_sec": 11581.841251664042
+        },
+        "realKnownCause/ambient_temperature_system_failure.csv": {
+          "n_points": 7267,
+          "seconds": 0.7979188999743201,
+          "points_per_sec": 9107.44187189184
+        },
+        "realKnownCause/cpu_utilization_asg_misconfiguration.csv": {
+          "n_points": 18050,
+          "seconds": 2.0713046999881044,
+          "points_per_sec": 8714.314219488644
+        },
+        "realKnownCause/ec2_request_latency_system_failure.csv": {
+          "n_points": 4032,
+          "seconds": 0.43140249999123625,
+          "points_per_sec": 9346.260163262634
+        },
+        "realKnownCause/machine_temperature_system_failure.csv": {
+          "n_points": 22695,
+          "seconds": 2.536347500019474,
+          "points_per_sec": 8947.90638894148
+        },
+        "realKnownCause/nyc_taxi.csv": {
+          "n_points": 10320,
+          "seconds": 1.2369021000049543,
+          "points_per_sec": 8343.425077828442
+        },
+        "realKnownCause/rogue_agent_key_hold.csv": {
+          "n_points": 1882,
+          "seconds": 0.16349179999087937,
+          "points_per_sec": 11511.280688725612
+        },
+        "realKnownCause/rogue_agent_key_updown.csv": {
+          "n_points": 5315,
+          "seconds": 0.44018490001326427,
+          "points_per_sec": 12074.471431981972
+        },
+        "realTraffic/TravelTime_387.csv": {
+          "n_points": 2500,
+          "seconds": 0.2370255999849178,
+          "points_per_sec": 10547.38391194486
+        },
+        "realTraffic/TravelTime_451.csv": {
+          "n_points": 2162,
+          "seconds": 0.20614249998470768,
+          "points_per_sec": 10487.890658939248
+        },
+        "realTraffic/occupancy_6005.csv": {
+          "n_points": 2380,
+          "seconds": 0.24449810001533478,
+          "points_per_sec": 9734.226972932418
+        },
+        "realTraffic/occupancy_t4013.csv": {
+          "n_points": 2500,
+          "seconds": 0.2931788999994751,
+          "points_per_sec": 8527.21665851286
+        },
+        "realTraffic/speed_6005.csv": {
+          "n_points": 2500,
+          "seconds": 0.24984450000920333,
+          "points_per_sec": 10006.223870879325
+        },
+        "realTraffic/speed_7578.csv": {
+          "n_points": 1127,
+          "seconds": 0.10085529999923892,
+          "points_per_sec": 11174.42514184683
+        },
+        "realTraffic/speed_t4013.csv": {
+          "n_points": 2495,
+          "seconds": 0.24026599997887388,
+          "points_per_sec": 10384.324041767793
+        },
+        "realTweets/Twitter_volume_AAPL.csv": {
+          "n_points": 15902,
+          "seconds": 1.6420268999936525,
+          "points_per_sec": 9684.372405873175
+        },
+        "realTweets/Twitter_volume_AMZN.csv": {
+          "n_points": 15831,
+          "seconds": 1.7356145000085235,
+          "points_per_sec": 9121.26511960015
+        },
+        "realTweets/Twitter_volume_CRM.csv": {
+          "n_points": 15902,
+          "seconds": 1.857865199999651,
+          "points_per_sec": 8559.286217322435
+        },
+        "realTweets/Twitter_volume_CVS.csv": {
+          "n_points": 15853,
+          "seconds": 1.6988640000054147,
+          "points_per_sec": 9331.529775161209
+        },
+        "realTweets/Twitter_volume_FB.csv": {
+          "n_points": 15833,
+          "seconds": 1.7166022000019439,
+          "points_per_sec": 9223.453168114354
+        },
+        "realTweets/Twitter_volume_GOOG.csv": {
+          "n_points": 15842,
+          "seconds": 1.7312277000164613,
+          "points_per_sec": 9150.731587675826
+        },
+        "realTweets/Twitter_volume_IBM.csv": {
+          "n_points": 15893,
+          "seconds": 1.8905898000230081,
+          "points_per_sec": 8406.371387281675
+        },
+        "realTweets/Twitter_volume_KO.csv": {
+          "n_points": 15851,
+          "seconds": 1.6841148000094108,
+          "points_per_sec": 9412.066208260521
+        },
+        "realTweets/Twitter_volume_PFE.csv": {
+          "n_points": 15858,
+          "seconds": 1.8757187000010163,
+          "points_per_sec": 8454.359387679724
+        },
+        "realTweets/Twitter_volume_UPS.csv": {
+          "n_points": 15866,
+          "seconds": 1.7270890999934636,
+          "points_per_sec": 9186.555574961389
+        }
+      }
+    }
+  }
+}

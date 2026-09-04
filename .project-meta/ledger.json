@@ -3,7 +3,7 @@
  "project": "nab-anomaly-detector",
  "repo": "vir-cipher/nab-anomaly-detector",
  "author": "vir-cipher",
- "step_pointer": 14,
+ "step_pointer": 15,
  "last_green_tag": "green-nab-anomaly-detector-2",
  "steps": [
   {
@@ -314,6 +314,30 @@
     "why": "Phase-14 question: does COMBINING the strong statistical detector with the ML detector beat either alone? Honest answer on the default weights: no. Hybrid standard NAB = 11.40, far below Gaussian's 40.13 -- the forest's ~0.5 baseline noise, weighted 0.3, blurs the Gaussian's sharp 0/1 signal and drags the combined score out of the optimal threshold band.",
     "concept": "Leaderboard / NAB score: every detector is swept for its best per-profile threshold, then ranked by NAB score (higher = better). Standard-profile ranking now: gaussian 40.13 > zscore 23.43 > ewma 20.64 > hybrid 11.40 > iforest 5.25 > threshold 0.00. Lesson: a weighted-average ensemble only helps when both members are individually strong; blending a strong detector with a 7.6x-weaker one pulls the strong one down.",
     "next": "step-014: runtime benchmarking -- wall-clock per stream per detector (the '10x speed' half of the project claim)."
+   }
+  },
+  {
+   "id": "step-014",
+   "phase": 14,
+   "title": "Runtime benchmarking - wall-clock per stream for each detector",
+   "status": "done",
+   "done_on": "2026-09-04",
+   "commit_sha": "PENDING",
+   "files_touched": [
+    "src/benchmark_runtime.py",
+    "tests/test_benchmark_runtime.py",
+    "results/runtime_benchmark.csv",
+    "results/runtime_benchmark.json",
+    "docs/WALKTHROUGH.md",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "New module src/benchmark_runtime.py times all six leaderboard detectors streaming the entire NAB corpus (365,558 points across 58 streams) one point at a time, and writes results/runtime_benchmark.csv + .json (throughput, microseconds per point, and speed-up vs the isolation forest). 7 new tests, 220/220 green.",
+    "why": "The project headline promises '...at 10x speed', so this step measures it. The four statistical detectors run 114x to 836x faster than the pure-Python isolation forest. The accuracy leader, Windowed Gaussian (NAB 40.13), processes a point in 0.71 microseconds versus the forest's 111.55 - about 156x faster. So the 10x claim is beaten by more than a full order of magnitude, and the same detector is both the most accurate AND (after the do-nothing threshold) among the fastest.",
+    "concept": "Throughput benchmark - points processed per second, timing only the handle_record loop and keeping the best of repeated passes to cut OS scheduling noise. The portable finding is the RATIO (speedup_vs_iforest), because absolute times depend on the CPU. Key read: the hybrid runs at forest speed (1.03x) because it embeds the forest, so the default hybrid is both slower and (step-013) less accurate than plain Gaussian - a clean double negative that argues for the simple statistical detector.",
+    "next": "step-015: build a Streamlit dashboard for live anomaly visualisation (Phase 14)."
    }
   }
  ]
