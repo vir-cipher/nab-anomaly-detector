@@ -1,0 +1,5 @@
+# Optional extra: the step-015 live dashboard (src/dashboard.py).
+# The core benchmark is pure-Python (see requirements.txt); Streamlit
+# is only needed to run the interactive visualisation and its AppTest
+# smoke test. Install with:  pip install -r requirements-dashboard.txt
+streamlit>=1.28

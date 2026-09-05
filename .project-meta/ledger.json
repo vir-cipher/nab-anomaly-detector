@@ -3,7 +3,7 @@
  "project": "nab-anomaly-detector",
  "repo": "vir-cipher/nab-anomaly-detector",
  "author": "vir-cipher",
- "step_pointer": 15,
+ "step_pointer": 16,
  "last_green_tag": "green-nab-anomaly-detector-2",
  "steps": [
   {
@@ -338,6 +338,30 @@
     "why": "The project headline promises '...at 10x speed', so this step measures it. The four statistical detectors run 114x to 836x faster than the pure-Python isolation forest. The accuracy leader, Windowed Gaussian (NAB 40.13), processes a point in 0.71 microseconds versus the forest's 111.55 - about 156x faster. So the 10x claim is beaten by more than a full order of magnitude, and the same detector is both the most accurate AND (after the do-nothing threshold) among the fastest.",
     "concept": "Throughput benchmark - points processed per second, timing only the handle_record loop and keeping the best of repeated passes to cut OS scheduling noise. The portable finding is the RATIO (speedup_vs_iforest), because absolute times depend on the CPU. Key read: the hybrid runs at forest speed (1.03x) because it embeds the forest, so the default hybrid is both slower and (step-013) less accurate than plain Gaussian - a clean double negative that argues for the simple statistical detector.",
     "next": "step-015: build a Streamlit dashboard for live anomaly visualisation (Phase 14)."
+   }
+  },
+  {
+   "id": "step-015",
+   "phase": 14,
+   "title": "Build Streamlit dashboard for live anomaly visualization",
+   "status": "done",
+   "done_on": "2026-09-05",
+   "commit_sha": null,
+   "files_touched": [
+    "src/dashboard.py",
+    "tests/test_dashboard.py",
+    "requirements-dashboard.txt",
+    "docs/WALKTHROUGH.md",
+    ".gitignore",
+    ".project-meta/ledger.json",
+    ".project-meta/decisions.log"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "New module src/dashboard.py: a Streamlit app that streams any NAB feed through any of the 5 detectors one point at a time (no look-ahead) and shows the anomaly score, alarm threshold and ground-truth windows building up live. Computation is in plain functions; Streamlit is imported lazily so the logic is unit-tested without a browser and a streamlit.testing AppTest smoke test proves the whole app builds and runs on the nyc_taxi stream. 15 new tests, 235/235 green.",
+    "why": "Phase-14 wrap-up: turns the project's CSV leaderboards into something a recruiter or an MS committee can SEE running. It reuses the exact detector classes scored on the leaderboard, so the live scores are the same numbers the benchmark is built from -- a demo that doubles as an integration test.",
+    "concept": "Testable Streamlit -- heavy logic lives in importable functions and Streamlit is imported only inside main(), so unit tests need no browser while AppTest still verifies the app runs; the core benchmark stays pure-Python (Streamlit is an optional requirements-dashboard.txt extra). The headline test asserts the first k scores are identical whether you feed the detector k points or the whole stream -- the mathematical definition of a real-time, no-look-ahead detector.",
+    "next": "step-016: expand WALKTHROUGH.md to the full write-up (>=2000 words, 9 sections) for Phase 15."
    }
   }
  ]

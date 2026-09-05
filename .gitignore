@@ -14,3 +14,6 @@ htmlcov/
 # NAB data (downloaded by src/download_nab.py, not committed)
 data/nab/
 .project-meta/run.lock
+
+# Transient run scratch (lock, captured pytest/pip output)
+.project-meta/_*

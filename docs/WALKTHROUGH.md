@@ -209,4 +209,31 @@ accurate than plain Gaussian. Absolute times are machine-specific (Python 3.14, 
 11th-gen); the portable finding is the ratio. The project's "10x speed" ambition is beaten
 by more than a full order of magnitude — through the simple statistical detectors, not the ML one.
 
+### Live dashboard — watch a detector work (step-015)
+
+Numbers in a CSV are hard to feel; a live view is not. `src/dashboard.py` is a
+Streamlit app that streams any NAB feed through any detector **one point at a time,
+with no look-ahead**, and shows the anomaly score building up exactly as a production
+monitor would see it. Ground-truth anomaly windows are named alongside the raw value
+and score charts, and an adjustable threshold line turns scores into alarms live.
+
+Run it locally:
+
+```
+pip install -r requirements-dashboard.txt   # Streamlit is an optional extra
+streamlit run src/dashboard.py
+```
+
+**Design note — testable Streamlit.** All computation (streaming the detector,
+thresholding, mapping anomaly windows to indices, per-frame metrics) lives in plain
+functions in `src/dashboard.py`; Streamlit is imported lazily inside `main()`. So the
+logic is unit-tested without a browser, and a separate `AppTest` smoke test
+(`streamlit.testing`) proves the whole app builds and runs. The core benchmark stays
+pure-Python — Streamlit never enters `requirements.txt`.
+
+**Correctness anchor.** The key test asserts that the scores for the first *k* points
+are identical whether you feed the detector *k* points or the whole stream — the
+mathematical definition of a real-time detector (no point may depend on its future).
+If the live view is moving, that property is what makes it honest.
+
 ## 7–9. (Sections added as phases complete.)
