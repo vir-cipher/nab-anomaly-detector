@@ -346,7 +346,7 @@
    "title": "Build Streamlit dashboard for live anomaly visualization",
    "status": "done",
    "done_on": "2026-09-05",
-   "commit_sha": null,
+   "commit_sha": "b9ecc7d",
    "files_touched": [
     "src/dashboard.py",
     "tests/test_dashboard.py",
