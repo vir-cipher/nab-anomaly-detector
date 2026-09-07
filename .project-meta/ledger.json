@@ -3,7 +3,7 @@
  "project": "nab-anomaly-detector",
  "repo": "vir-cipher/nab-anomaly-detector",
  "author": "vir-cipher",
- "step_pointer": 16,
+ "step_pointer": 17,
  "last_green_tag": "green-nab-anomaly-detector-2",
  "steps": [
   {
@@ -362,6 +362,25 @@
     "why": "Phase-14 wrap-up: turns the project's CSV leaderboards into something a recruiter or an MS committee can SEE running. It reuses the exact detector classes scored on the leaderboard, so the live scores are the same numbers the benchmark is built from -- a demo that doubles as an integration test.",
     "concept": "Testable Streamlit -- heavy logic lives in importable functions and Streamlit is imported only inside main(), so unit tests need no browser while AppTest still verifies the app runs; the core benchmark stays pure-Python (Streamlit is an optional requirements-dashboard.txt extra). The headline test asserts the first k scores are identical whether you feed the detector k points or the whole stream -- the mathematical definition of a real-time, no-look-ahead detector.",
     "next": "step-016: expand WALKTHROUGH.md to the full write-up (>=2000 words, 9 sections) for Phase 15."
+   }
+  },
+  {
+   "id": "step-016",
+   "phase": 15,
+   "title": "Expand WALKTHROUGH.md to full write-up (>=2000 words, 9 sections)",
+   "status": "done",
+   "done_on": "2026-09-07",
+   "commit_sha": "c2dd5d0",
+   "files_touched": [
+    "docs/WALKTHROUGH.md",
+    ".project-meta/ledger.json"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "Expanded WALKTHROUGH.md from 1590 to 2788 words by adding sections 7 (full 6-detector leaderboard with accuracy + speed tables across 3 NAB scoring profiles), 8 (honest negative result analysis: hybrid underperforms Gaussian on both accuracy and speed because the isolation forest's flat ~0.5 scores act as noise), and 9 (technical takeaways, reproducibility instructions, credits).",
+    "why": "Phase 15 gate: the write-up must be a self-contained, jargon-defined, reproducible document that an MS admissions committee or recruiter can follow from 'what is anomaly detection' through to the honest negative finding.",
+    "concept": "Negative results matter -- the hybrid (NAB 11.40) scoring below plain Gaussian (40.13) is a specific, verifiable finding (flat forest scores dilute the sharp Gaussian signal), not a failure. Reporting it honestly, with the diagnosis and the parameter evidence from section 6, is what makes the project credible.",
+    "next": "step-017: polish README.md to <500 words with quick-start, key finding, and credits (B.Cyber at IIT Kanpur WSAIS)."
    }
   }
  ]
