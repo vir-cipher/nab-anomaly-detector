@@ -1,4 +1,4 @@
-﻿# NAB Anomaly Detector — Walkthrough
+# NAB Anomaly Detector — Walkthrough
 
 This document explains the project from the ground up. It grows with each phase.
 If you are reading this for the first time, start here.
@@ -236,4 +236,143 @@ are identical whether you feed the detector *k* points or the whole stream — t
 mathematical definition of a real-time detector (no point may depend on its future).
 If the live view is moving, that property is what makes it honest.
 
-## 7–9. (Sections added as phases complete.)
+## 7. Results: the full six-detector leaderboard
+
+NAB scores every detector on the same 58 streams and 116 anomaly windows. The
+scoring protocol has three **profiles** (weighting schemes):
+
+- **standard** — the default. Early detection rewarded, false positives penalised.
+- **reward_low_fp** — false positives cost *more*. Rewards conservative detectors.
+- **reward_low_fn** — missed anomalies cost *more*. Rewards aggressive detectors.
+
+A **NAB score** of 100 means perfect: every anomaly caught early, zero false alarms.
+A score of 0 means the detector found nothing useful. Negative scores are possible
+(the penalties outweigh the rewards).
+
+### Accuracy leaderboard (standard profile)
+
+| Rank | Detector | NAB score | Type |
+|------|----------|:---------:|------|
+| 1 | Windowed Gaussian | 40.13 | statistical |
+| 2 | Z-score | 23.43 | statistical |
+| 3 | EWMA | 20.64 | statistical |
+| 4 | Hybrid (Gaussian + iforest) | 11.40 | combined |
+| 5 | Isolation forest | 5.25 | ML |
+| 6 | Threshold | 0.00 | baseline |
+
+The pattern repeats across all three profiles. Windowed Gaussian leads every
+profile: 40.13 (standard), 23.94 (reward_low_fp), 47.73 (reward_low_fn). It is
+the only detector that scores above zero on the conservative reward_low_fp profile
+(the others either score zero or single digits). In other words, Gaussian is the
+only detector that can catch anomalies without also crying wolf too often.
+
+### Speed leaderboard
+
+| Detector | Points per second | Microseconds per point | Speed-up vs iforest |
+|----------|------------------:|-----------------------:|--------------------:|
+| Threshold | 7,492,417 | 0.13 | 836× |
+| Gaussian | 1,402,069 | 0.71 | 156× |
+| EWMA | 1,169,500 | 0.86 | 130× |
+| Z-score | 1,019,969 | 0.98 | 114× |
+| Hybrid | 9,254 | 108.06 | 1.03× |
+| Iforest | 8,964 | 111.55 | 1.00× |
+
+The statistical detectors process over a million data points per second in pure
+Python. The isolation forest manages about 9,000 — roughly 100× slower. Since the
+hybrid embeds the forest, it runs at forest speed. The accuracy winner (Gaussian) is
+also 156× faster than the ML approach.
+
+Timings are from a single machine (Python 3.14, Intel 11th-gen i7). The absolute
+numbers are machine-specific, but the *ratios* are portable: the statistical
+detectors will always be orders of magnitude faster because they do O(1) work per
+point, while the forest does O(n_trees × log sample_size).
+
+## 8. An honest negative: why the hybrid underperforms
+
+The original hypothesis was:
+
+> A hybrid detector combining EWMA and isolation forest beats NAB published
+> baselines on at least 3 of 7 categories while running at least 10× faster.
+
+The result: **the hypothesis does not hold.** The hybrid (NAB 11.40) scores below
+every statistical detector and runs at forest speed (1.03×, not 10×). Windowed
+Gaussian alone beats it on both accuracy *and* speed. This is a negative result,
+and we report it as such.
+
+### Why the combination hurts
+
+The hybrid uses a **weighted average** (70% Gaussian, 30% isolation forest) to
+combine the two anomaly scores. The problem is that the isolation forest's scores
+hover around 0.5 for almost every point — anomaly or not. It produces a nearly flat
+signal that acts as noise when mixed with the sharp, well-calibrated Gaussian score.
+The 70/30 blend drags the Gaussian peaks down toward the forest's flat baseline,
+making the combined score less decisive.
+
+We tested alternative voting rules (mean, max, min) and different weight splits
+during the combiner's design (step-012). None overcame the fundamental issue: the
+forest's per-point anomaly scores are not well-separated enough to be useful for
+simple voting. More sophisticated combination strategies (stacking, learned
+meta-classifiers) were out of scope for a Semester 1 project — but the *diagnosis*
+(flat forest scores) points exactly to what a Semester 2 extension could fix.
+
+### Why reporting a negative result matters
+
+In research, negative results are not failures. They prevent other people from
+wasting time on the same dead end, and they sharpen the question for the next
+attempt. Our negative result carries a specific, verifiable insight: **the isolation
+forest's anomaly scores are too flat for simple voting to work.** That is not a
+guess; it is derivable from the scored outputs in `results/`. Anyone who clones the
+repo can verify it by plotting the forest's per-point scores against Gaussian's
+and observing the variance difference.
+
+The parameter sensitivity analysis (section 6) already showed that tuning the forest
+only moves the NAB score by ~1.3 points — the gap to Gaussian is structural, not
+parametric. This makes the write-up *more* credible, not less: we did the experiment,
+measured the outcome, and did not cherry-pick our way to a positive headline.
+
+## 9. What we learned
+
+### Technical takeaways
+
+- **Simple statistics can be surprisingly strong.** Windowed Gaussian — a running
+  mean-and-variance calculation — outperforms a 64-tree isolation forest on NAB
+  by a factor of 8× on accuracy and 156× on speed. Complexity is not free.
+- **Combination is not trivially additive.** Averaging a sharp signal (Gaussian)
+  with a flat one (forest) degrades both. Effective ensembles need components whose
+  scores are individually informative.
+- **Benchmarks enforce honesty.** Without NAB, we might have claimed the hybrid
+  "works"; with NAB, the numbers speak for themselves. Every claim in this project
+  traces to a scored result in `results/` or a test in `tests/`.
+- **Streaming matters.** Every detector in this project processes data one point at a
+  time, in order, with no look-ahead. This constraint is what makes the results
+  applicable to real monitoring — a detector that needs the whole dataset up front
+  cannot be deployed in production.
+
+### Reproducibility
+
+From a fresh machine:
+
+```
+git clone https://github.com/vir-cipher/nab-anomaly-detector.git
+cd nab-anomaly-detector
+pip install -r requirements.txt
+python src/download_nab.py
+python -m pytest tests/ -q
+```
+
+Every test passes. Every number in this write-up is derived from files in `results/`
+that are themselves produced by scripts in `src/`. The Streamlit dashboard
+(`src/dashboard.py`) shows any detector working live on any NAB stream — install
+the optional `requirements-dashboard.txt` and run `streamlit run src/dashboard.py`.
+
+### Credits
+
+**Author:** Ansh Vir Bhargav (`vir-cipher`) — B.Cyber at IIT Kanpur (WSAIS),
+Semester 1, 2026.
+
+**Benchmark:** Numenta Anomaly Benchmark (Lavin & Ahmad, 2015).
+Source: [github.com/numenta/NAB](https://github.com/numenta/NAB).
+
+**Curriculum alignment:** Fundamentals of Data Engineering (Data) — Semester 1.
+
+**Tools:** Python 3.14, scikit-learn, pandas, numpy, Streamlit.
