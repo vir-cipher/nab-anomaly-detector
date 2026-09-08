@@ -389,7 +389,7 @@
    "title": "Polish README (<500 words, quick-start, key finding, credits)",
    "status": "done",
    "done_on": "2026-09-08",
-   "commit_sha": null,
+   "commit_sha": "0164908",
    "files_touched": [
     "README.md",
     ".project-meta/ledger.json"
