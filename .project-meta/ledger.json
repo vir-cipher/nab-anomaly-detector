@@ -3,7 +3,7 @@
  "project": "nab-anomaly-detector",
  "repo": "vir-cipher/nab-anomaly-detector",
  "author": "vir-cipher",
- "step_pointer": 17,
+ "step_pointer": 18,
  "last_green_tag": "green-nab-anomaly-detector-2",
  "steps": [
   {
@@ -381,6 +381,25 @@
     "why": "Phase 15 gate: the write-up must be a self-contained, jargon-defined, reproducible document that an MS admissions committee or recruiter can follow from 'what is anomaly detection' through to the honest negative finding.",
     "concept": "Negative results matter -- the hybrid (NAB 11.40) scoring below plain Gaussian (40.13) is a specific, verifiable finding (flat forest scores dilute the sharp Gaussian signal), not a failure. Reporting it honestly, with the diagnosis and the parameter evidence from section 6, is what makes the project credible.",
     "next": "step-017: polish README.md to <500 words with quick-start, key finding, and credits (B.Cyber at IIT Kanpur WSAIS)."
+   }
+  },
+  {
+   "id": "step-017",
+   "phase": 15,
+   "title": "Polish README (<500 words, quick-start, key finding, credits)",
+   "status": "done",
+   "done_on": "2026-09-08",
+   "commit_sha": null,
+   "files_touched": [
+    "README.md",
+    ".project-meta/ledger.json"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "Rewrote README.md from 250-word placeholder to a 392-word polished front page: 6-detector leaderboard table with accuracy and speed, honest negative result (hybrid 11.40 < Gaussian 40.13), quick-start with clone/test/score/dashboard commands, repo layout, and credits.",
+    "why": "Phase-15 gate: the README is the first thing a recruiter or MS committee sees on the repo. It must convey the key finding, prove the project runs, and credit the institution -- all in under 500 words.",
+    "concept": "README as elevator pitch -- the leaderboard table IS the result, the quick-start IS the reproducibility claim, and the honest negative IS the intellectual integrity signal. No prose summary can substitute for a table a reader can verify in 10 seconds.",
+    "next": "step-018: final CI verification and reproducibility check (fresh clone -> pip install -> pytest -> all green)."
    }
   }
  ]
