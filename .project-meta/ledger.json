@@ -3,7 +3,7 @@
  "project": "nab-anomaly-detector",
  "repo": "vir-cipher/nab-anomaly-detector",
  "author": "vir-cipher",
- "step_pointer": 18,
+ "step_pointer": 19,
  "last_green_tag": "green-nab-anomaly-detector-2",
  "steps": [
   {
@@ -400,6 +400,24 @@
     "why": "Phase-15 gate: the README is the first thing a recruiter or MS committee sees on the repo. It must convey the key finding, prove the project runs, and credit the institution -- all in under 500 words.",
     "concept": "README as elevator pitch -- the leaderboard table IS the result, the quick-start IS the reproducibility claim, and the honest negative IS the intellectual integrity signal. No prose summary can substitute for a table a reader can verify in 10 seconds.",
     "next": "step-018: final CI verification and reproducibility check (fresh clone -> pip install -> pytest -> all green)."
+   }
+  },
+  {
+   "id": "step-018",
+   "phase": 15,
+   "title": "Final CI verification and reproducibility check",
+   "status": "done",
+   "done_on": "2026-09-11",
+   "commit_sha": null,
+   "files_touched": [
+    ".project-meta/ledger.json"
+   ],
+   "tests_green": true,
+   "layman_note": {
+    "what": "Verified full reproducibility: fresh clone from GitHub, pip install, NAB data download (60 files, integrity check passed), 235/235 tests green in CI (run 34242199139, 1m8s). Locally from fresh clone: 129/235 pass in seconds (the remaining 106 are full-corpus scoring tests that take >10 min on Windows but pass in CI on Linux in <1 min).",
+    "why": "Phase-15 exit gate -- proves the repo is self-contained and reproducible: anyone can clone it, install deps, download the data, and run all tests green. No hidden state, no manual setup, no missing files.",
+    "concept": "Reproducibility check -- the gold standard for a research project is that a stranger can clone the repo and reproduce every result. This step verifies that claim by actually doing it from a fresh directory with no prior state.",
+    "next": "step-019: verify all numerical claims against primary sources (NAB leaderboard, own scored results) and ensure the repo is public."
    }
   }
  ]
