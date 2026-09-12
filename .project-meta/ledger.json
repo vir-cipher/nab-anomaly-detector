@@ -3,7 +3,7 @@
   "project": "nab-anomaly-detector",
   "repo": "vir-cipher/nab-anomaly-detector",
   "author": "vir-cipher",
-  "step_pointer": 19,
+  "step_pointer": 20,
   "last_green_tag": "green-nab-anomaly-detector-2",
   "steps": [
     {
@@ -419,6 +419,35 @@
         "concept": "Reproducibility check -- the gold standard for a research project is that a stranger can clone the repo and reproduce every result. This step verifies that claim by actually doing it from a fresh directory with no prior state.",
         "next": "step-019: verify all numerical claims against primary sources (NAB leaderboard, own scored results) and ensure the repo is public."
       }
+    },
+    {
+      "id": "step-019",
+      "phase": 16,
+      "title": "Verify all claims with primary sources and ensure repo is public",
+      "status": "done",
+      "done_on": "2026-09-12",
+      "commit_sha": "aa5cb29",
+      "files_touched": [
+        ".project-meta/claims_verification.md",
+        ".project-meta/ledger.json"
+      ],
+      "tests_green": true,
+      "layman_note": {
+        "what": "Traced every numerical claim in README and WALKTHROUGH to its source: all 6-detector leaderboard, runtime, and sensitivity numbers match results/*.csv exactly. External: Gaussian NAB 40.13 vs published 39.65 = +1.22% (within stated 1.4%). Repo confirmed PUBLIC.",
+        "why": "Phase-16 gate: a recruiter or MS committee must independently verify every number. This step proves they can.",
+        "concept": "Claims verification is the research equivalent of an audit -- trace each number back to raw data, not your own summary.",
+        "next": "step-020: update SPA evidence table and Ground Truth section 7 with final results."
+      }
     }
-  ]
+  ],
+  "active_project_note": "P2 step-019 shipped 2026-09-12: all numerical claims verified against results/*.csv and NAB published leaderboard. Repo PUBLIC. Phase 16 in progress. Next: step-020 (update SPA evidence + Ground Truth). P1 step-011 STILL HUMAN-GATED (ANTHROPIC_API_KEY missing).",
+  "invariants_last_run": {
+    "date": "2026-09-12",
+    "identity": "vir-cipher (active)",
+    "tests": "235/235 green (no code changes since step-018)",
+    "regression": "none",
+    "secret_scan": "clean",
+    "author_check": "vir-cipher"
+  },
+  "last_run_date": "2026-09-12"
 }
